@@ -1,0 +1,72 @@
+js-artnet-packet/
+├── src/
+│   ├── index.js                 # Main entry point
+│   ├── constants/
+│   │   ├── opcodes.js           # OpCode definitions
+│   │   ├── ports.js             # Port and address constants
+│   │   └── protocol.js          # Protocol version, defaults
+│   ├── packets/
+│   │   ├── base/
+│   │   │   ├── ArtNetPacket.js           # Base with ProtVer
+│   │   │   └── ArtNetReplyPacket.js      # Base without ProtVer
+│   │   ├── discovery/
+│   │   │   ├── ArtNetPoll.js
+│   │   │   └── ArtNetPollReply.js
+│   │   ├── dmx/
+│   │   │   ├── ArtNetDMX.js
+│   │   │   ├── ArtNetSync.js
+│   │   │   └── ArtNetNzs.js
+│   │   ├── rdm/
+│   │   │   ├── ArtNetTodRequest.js
+│   │   │   ├── ArtNetTodData.js
+│   │   │   ├── ArtNetTodControl.js
+│   │   │   ├── ArtNetRdm.js
+│   │   │   └── ArtNetRdmSub.js
+│   │   ├── firmware/
+│   │   │   ├── ArtNetFirmwareMaster.js
+│   │   │   └── ArtNetFirmwareReply.js
+│   │   ├── config/
+│   │   │   ├── ArtNetAddress.js
+│   │   │   ├── ArtNetIpProg.js
+│   │   │   └── ArtNetIpProgReply.js
+│   │   ├── diagnostics/
+│   │   │   ├── ArtNetDiagData.js
+│   │   │   └── ArtNetTimeCode.js
+│   │   ├── media/
+│   │   │   ├── ArtNetVlc.js
+│   │   │   └── ArtNetCommand.js
+│   │   └── index.js             # Export all packets
+│   ├── serializers/
+│   │   ├── Serializer.js        # Base serializer interface
+│   │   ├── BufferSerializer.js  # Buffer ↔ Object conversion
+│   │   └── index.js
+│   ├── parser/
+│   │   ├── PacketParser.js      # Identify and parse incoming packets
+│   │   └── index.js
+│   ├── network/
+│   │   ├── Transceiver.js       # UDP send/receive handler
+│   │   ├── NodeBrowser.js       # Node discovery utility
+│   │   └── index.js
+│   └── utils/
+│       ├── validators.js         # Field validation
+│       ├── helpers.js            # Helper functions
+│       └── index.js
+├── test/
+│   ├── unit/
+│   │   ├── packets/
+│   │   ├── serializers/
+│   │   └── validators/
+│   ├── integration/
+│   │   ├── network-tests.js
+│   │   └── e2e-tests.js
+│   └── fixtures/                 # Sample packets for testing
+├── examples/
+│   ├── basic-dmx-send.js
+│   ├── node-discovery.js
+│   └── rdm-control.js
+├── docs/
+│   ├── API.md
+│   ├── PACKETS.md
+│   └── EXAMPLES.md
+├── package.json
+└── README.md

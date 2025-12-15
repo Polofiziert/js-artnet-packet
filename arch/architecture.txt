@@ -1,0 +1,204 @@
+// src/packets/base/ArtNetPacket.js
+class ArtNetPacket {
+  constructor(opCode) {
+    this.id = "Art-Net\0";
+    this.opCode = opCode;
+    this.protVerHi = 0;
+    this.protVerLo = 14;
+  }
+
+  toBuffer() { throw new Error('Abstract'); }
+  static fromBuffer(buffer) { throw new Error('Abstract'); }
+}
+
+// src/packets/base/ArtNetReplyPacket.js
+class ArtNetReplyPacket {
+  constructor(opCode) {
+    this.id = "Art-Net\0";
+    this.opCode = opCode;
+    // Explicitly NO ProtVer fields
+  }
+
+  toBuffer() { throw new Error('Abstract'); }
+  static fromBuffer(buffer) { throw new Error('Abstract'); }
+}
+
+// src/packets/discovery/ArtNetPoll.js
+class ArtNetPoll extends ArtNetPacket {
+  constructor(flags = 0) {
+    super(OpCodes.POLL);
+    this.flags = flags;
+  }
+
+  toBuffer() {
+    const buffer = Buffer.alloc(14);
+    // Implementation
+    return buffer;
+  }
+
+  static fromBuffer(buffer) {
+    const packet = new ArtNetPoll();
+    // Implementation
+    return packet;
+  }
+}
+
+// src/packets/discovery/ArtNetPollReply.js
+class ArtNetPollReply extends ArtNetReplyPacket {
+  constructor(ipAddress = "0.0.0.0") {
+    super(OpCodes.POLL_REPLY); // No ProtVer!
+    this.ipAddress = ipAddress;
+    this.version = { hi: 0, lo: 0 };
+    this.ports = [];
+  }
+
+  toBuffer() {
+    const buffer = Buffer.alloc(239);
+    // Implementation
+    return buffer;
+  }
+
+  static fromBuffer(buffer) {
+    const packet = new ArtNetPollReply();
+    // Implementation
+    return packet;
+  }
+}
+
+// src/parser/PacketParser.js
+class PacketParser {
+  static parse(buffer) {
+    const opCode = buffer.readUInt16LE(8);
+    
+    const packetMap = {
+      [OpCodes.POLL]: ArtNetPoll,
+      [OpCodes.POLL_REPLY]: ArtNetPollReply,
+      [OpCodes.DMX]: ArtNetDMX,
+      [OpCodes.TIMECODE]: ArtNetTimeCode,
+      [OpCodes.TOD_REQUEST]: ArtNetTodRequest,
+      // ... etc
+    };
+
+    const PacketClass = packetMap[opCode];
+    if (!PacketClass) {
+      throw new Error(`Unknown OpCode: 0x${opCode.toString(16)}`);
+    }
+
+    return PacketClass.fromBuffer(buffer);
+  }
+
+  static identify(buffer) {
+    // Return OpCode without full parsing
+    return buffer.readUInt16LE(8);
+  }
+}
+
+// src/serializers/Serializer.js
+class Serializer {
+  serialize(packet) { throw new Error('Abstract'); }
+  deserialize(data) { throw new Error('Abstract'); }
+}
+
+// src/serializers/BufferSerializer.js
+class BufferSerializer extends Serializer {
+  serialize(packet) {
+    return packet.toBuffer();
+  }
+
+  deserialize(buffer) {
+    return PacketParser.parse(buffer);
+  }
+}
+
+// src/serializers/JsonSerializer.js (optional, for debugging)
+class JsonSerializer extends Serializer {
+  serialize(packet) {
+    return JSON.stringify(this.packetToObject(packet));
+  }
+
+  packetToObject(packet) {
+    return {
+      type: packet.constructor.name,
+      opCode: packet.opCode,
+      ...packet // Spread all properties
+    };
+  }
+}
+
+
+// src/network/Transceiver.js
+class Transceiver extends EventEmitter {
+  constructor(port = 6454, address = "0.0.0.0") {
+    super();
+    this.port = port;
+    this.address = address;
+    this.socket = dgram.createSocket('udp4');
+  }
+
+  send(packet, remoteAddress = "255.255.255.255") {
+    const buffer = packet.toBuffer();
+    return this.socket.send(buffer, 0, buffer.length, this.port, remoteAddress);
+  }
+
+  receive(callback) {
+    this.socket.on('message', (buffer, rinfo) => {
+      try {
+        const packet = PacketParser.parse(buffer);
+        callback(packet, rinfo);
+      } catch (err) {
+        this.emit('error', err);
+      }
+    });
+  }
+
+  listen() {
+    this.socket.bind(this.port, this.address);
+    this.emit('listening');
+  }
+}
+
+
+// src/index.js
+module.exports = {
+  // Packets
+  packets: {
+    ArtNetPoll,
+    ArtNetPollReply,
+    ArtNetDMX,
+    ArtNetSync,
+    ArtNetTimeCode,
+    // ... all others
+  },
+
+  // Utilities
+  PacketParser,
+  Transceiver,
+  NodeBrowser,
+  Serializer,
+  BufferSerializer,
+
+  // Constants
+  OpCodes,
+  ProtocolVersion,
+  DMX_CHANNELS,
+
+  // Validators
+  validators
+};
+
+
+// usage example
+const { packets, Transceiver, PacketParser } = require('js-artnet-packet');
+
+// Send DMX
+const transceiver = new Transceiver();
+const dmxPacket = new packets.ArtNetDMX(universe: 0);
+dmxPacket.dmxData[0] = 255; // Channel 1 to full
+transceiver.send(dmxPacket);
+
+// Receive and parse
+transceiver.receive((packet, info) => {
+  if (packet instanceof packets.ArtNetPollReply) {
+    console.log(`Node at ${info.address}: ${packet.nodeShortName}`);
+  }
+});

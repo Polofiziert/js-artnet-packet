@@ -1,0 +1,7198 @@
+Art-Net 4
+Specification for the Art-Net 4 Ethernet Communication Protocol
+
+www.Art-Net.info
+
+Winner of the PLASA 2016 Innovation Award
+
+© Copyright Artistic Licence 1998-2025
+This document is released without warranty of any kind including but not limited to the
+implied warranties of fitness for a particular purpose.
+Art-Net™ is a trade mark of Artistic Licence. The Art-Net protocol and associated
+documentation is copyright Artistic Licence. Any third parties are welcome to use this
+communication protocol without royalty. Please see section on credits for details of
+copyright message.
+Artistic Licence require that any manufacturer who implements this protocol apply for an
+OemCode at the following link: https://art-net.org.uk/oem-code-zone/#apply-for-oemcode
+
+Contents
+Document History ........................................................................................................... - 1 Comments on Revisions AJ-BD: .................................................................................. - 1 Comments on Revision BE: ......................................................................................... - 1 Comments on Revision BF: ......................................................................................... - 1 Comments on Revision BG: ........................................................................................ - 1 Comments on Revision BH: ........................................................................................ - 1 Comments on Revision BI: .......................................................................................... - 2 Comments on Revision BJ:.......................................................................................... - 2 Comments on Revision BK: ......................................................................................... - 2 Comments on Revision DA: ........................................................................................ - 2 Comments on Revision DB: ........................................................................................ - 2 Comments on Revision DC: ........................................................................................ - 2 Comments on Revision DD: ........................................................................................ - 2 Comments on Revision DE: ......................................................................................... - 2 Comments on Revision DF: ......................................................................................... - 3 Comments on Revision DG: ........................................................................................ - 3 Comments on Revision DH: ........................................................................................ - 3 Comments on Revision DI:.......................................................................................... - 3 Comments on Revision DJ: ......................................................................................... - 4 Comments on Revision DK:......................................................................................... - 4 -
+
+Comments on Revision DL: ......................................................................................... - 4 Comments on Revision DM: ....................................................................................... - 4 Comments on Revision DN: ........................................................................................ - 4 Comments on Revision DO: ........................................................................................ - 4 Comments on Revision DP:......................................................................................... - 4 Art-Net overview: ........................................................................................................... - 6 Art-Net 4: .................................................................................................................... - 6 Universe Addressing: .................................................................................................. - 8 Credits: ....................................................................................................................... - 9 Terminology: ............................................................................................................... - 9 Node........................................................................................................................ - 9 Port-Address ........................................................................................................... - 9 Net .......................................................................................................................... - 9 Sub-Net ................................................................................................................... - 9 Universe ................................................................................................................ - 10 Kiloverse ................................................................................................................ - 10 Controller .............................................................................................................. - 10 IP ........................................................................................................................... - 10 Subnet Mask ......................................................................................................... - 10 Port ....................................................................................................................... - 10 Directed Broadcast................................................................................................ - 10 -
+
+Limited Broadcast ................................................................................................. - 10 Controller .............................................................................................................. - 10 Media Server ......................................................................................................... - 10 Ethernet Implementation: ............................................................................................ - 12 General Notes: .......................................................................................................... - 12 Protocol Operation ................................................................................................... - 12 IP address configuration ........................................................................................... - 12 IP address configuration - DHCP ........................................................................... - 13 IP address configuration – Static Addressing ........................................................ - 13 IP address Example ............................................................................................... - 14 Controller Default Poll .............................................................................................. - 15 Art-Net packet definition .............................................................................................. - 16 ArtPoll: ...................................................................................................................... - 16 Multiple Controllers .............................................................................................. - 17 Targeted Mode ..................................................................................................... - 17 Minimum Packet Length ....................................................................................... - 17 ArtPoll packet definition ....................................................................................... - 18 Table 1 - OpCodes: ................................................................................................ - 20 Table 2 - OemCode:............................................................................................... - 23 Table 3 – NodeReport Codes: ............................................................................... - 23 Table 4 – Style Codes: ........................................................................................... - 24 -
+
+ArtPollReply: ............................................................................................................. - 25 Minimum Packet Length ....................................................................................... - 25 ArtPollReply packet definition .............................................................................. - 25 ArtIpProg: ................................................................................................................. - 34 ArtIpProg packet definition ................................................................................... - 34 ArtIpProgReply: ........................................................................................................ - 36 ArtIpProgReply packet definition .......................................................................... - 36 ArtAddress: ............................................................................................................... - 38 ArtAddress packet definition ................................................................................ - 38 ArtDataRequest: ....................................................................................................... - 48 ArtDataRequest packet definition ........................................................................ - 48 Table 4a – DataRequest Codes: ............................................................................ - 49 ArtDataReply: ........................................................................................................... - 50 ArtDataReply packet definition ............................................................................. - 50 ArtDiagData: ............................................................................................................. - 52 ArtDiagData packet definition .............................................................................. - 52 Table 5 – Priority Codes: ....................................................................................... - 53 ArtTimeCode:............................................................................................................ - 54 ArtTimeCode packet definition ............................................................................. - 54 ArtCommand: ........................................................................................................... - 56 ArtCommand packet definition............................................................................. - 56 -
+
+Table 6 – ArtCommand Commands: ..................................................................... - 57 ArtTrigger:................................................................................................................. - 58 ArtTrigger packet definition .................................................................................. - 58 Key......................................................................................................................... - 59 Table 7 – ArtTrigger Key Values. ........................................................................... - 59 SubKey................................................................................................................... - 59 Payload.................................................................................................................. - 61 ArtDmx:..................................................................................................................... - 62 Unicast Subscription: ............................................................................................ - 63 ArtDmx packet definition ...................................................................................... - 63 Refresh Rate: ......................................................................................................... - 64 Synchronous Data: ................................................................................................ - 64 Data Merging: ....................................................................................................... - 64 ArtSync: .................................................................................................................... - 66 Managing Synchronous and non-Synchronous modes ......................................... - 67 ArtSync packet definition ...................................................................................... - 67 Multiple controllers .............................................................................................. - 68 ArtNzs: ...................................................................................................................... - 69 ArtNzs packet definition ....................................................................................... - 69 ArtVlc: ....................................................................................................................... - 71 ArtVlc packet definition ........................................................................................ - 71 -
+
+ArtInput: ................................................................................................................... - 75 ArtInput packet definition ..................................................................................... - 75 Firmware and UBEA upgrades: ..................................................................................... - 77 ArtFirmwareMaster: ................................................................................................. - 78 ArtFirmwareMaster packet definition .................................................................. - 78 ArtFirmwareReply:.................................................................................................... - 80 ArtFirmwareReply packet definition ..................................................................... - 80 Firmware File Format: ........................................................................................... - 81 RDM Support: ............................................................................................................... - 83 Input Gateway ....................................................................................................... - 83 Output Gateway .................................................................................................... - 83 Table of Devices (TOD): ......................................................................................... - 83 RDM Discovery ......................................................................................................... - 83 Output Gateway Operation .................................................................................. - 83 Input Gateway Operation ..................................................................................... - 84 Controller Operation: ............................................................................................ - 84 ArtTodRequest:......................................................................................................... - 85 ArtTodRequest packet definition .......................................................................... - 85 ArtTodData: .............................................................................................................. - 87 ArtTodData packet definition ............................................................................... - 87 ArtTodControl: .......................................................................................................... - 90 -
+
+ArtTodControl packet definition ........................................................................... - 90 ArtRdm: .................................................................................................................... - 92 ArtRdm packet definition ...................................................................................... - 92 ArtRdmSub: .............................................................................................................. - 94 ArtRdmSub packet definition ................................................................................ - 94 Display of status: ........................................................................................................... - 96 Data Integrity: ............................................................................................................... - 96 -
+
+Document History
+Comments on Revisions AJ-BD:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+
+Concept of Binding Address added to ArtPollReply.
+Error in Filler count in ArtPollReply corrected.
+DHCP Flag added to ArtPollReply.
+ArtDiagData packet added.
+ArtCommand packet added.
+Detail of ArtDmx unicast corrected.
+Notes on ArtDmx length added.
+ArtTimeCode packet added.
+Art-Net 3 release.
+15 bit universe addresses added.
+Error in description of 'Net' corrected.
+Confusion over limited vs. directed broadcast resolved.
+
+Comments on Revision BE:
+•
+•
+•
+•
+•
+
+Typing error in ArtFirmwareMaster corrected - incorrectly defined
+FirmwareLength as Int32.
+ArtNzs packet added.
+EstaCode in ArtPollReply redefined as two bytes.
+Port-Address programming authority explanation improved.
+Error in default IP address example corrected.
+
+Comments on Revision BF:
+•
+•
+
+Clarification of Endian in ArtRdmSub.
+Description of Universe Subscription improved.
+
+Comments on Revision BG:
+•
+
+Clarification that ArtTodControl must be replied to with ArtTodData.
+
+Comments on Revision BH:
+•
+•
+•
+•
+
+Clarifications.
+Readability improvements.
+Added definition of ArtCommand.
+Added definition of ArtNzs.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-1-
+
+•
+
+Added definition of ArtTrigger.
+
+Comments on Revision BI:
+•
+•
+
+Typographic corrections.
+ArtSync added.
+
+Comments on Revision BJ:
+•
+•
+
+Noted OpMac OpCodes as deprecated.
+Corrected casting error in ArtTodControl definition.
+
+Comments on Revision BK:
+•
+•
+•
+•
+
+ArtVlc added
+Vlc management added to ArtPoll
+Recommended ArtDmx keep alive time changed to 800mS to 1000mS for sACN
+compatibility.
+Clarification to array length in ArtTodRequest.
+
+Comments on Revision DA:
+•
+•
+
+•
+•
+
+First release of Art-Net 4.
+Requirement that bound nodes have a different IP address to the root node has
+been dropped in order to avoid the need to multi-home products with more
+than four ports.
+BindIndex added to ArtTodData
+sACN / Art-Net protocol selection added to ArtPollReply and ArtAddress
+
+Comments on Revision DB:
+•
+
+ArtPollReply->Status2.Bit4 defined.
+
+Comments on Revision DC:
+•
+•
+
+All spellings of “Port Address”, “PortAddress” changed to “Port-Address”.
+TCP/IP Port Number programming in ArtIpProg now shown as deprecated.
+
+Comments on Revision DD:
+•
+
+Missing filler fields in ArtTrigger corrected.
+
+Comments on Revision DE:
+•
+•
+
+ArtPollReply->GoodOutputB fields added.
+ArtPollReply->Status2 updated.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-2-
+
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+
+ArtPollReply->Status3 added.
+ArtPollReply->User added.
+ArtPollReply->RefreshRate added.
+ArtPoll->EstaMan added.
+ArtPoll->OemCode added.
+Additional ArtAddress commands for failsafesupport added.
+Added DefaultResponder to ArtPollReply.
+Added LLRP support flag.
+DefaultGateway added to ArtIpProg.
+ArtRdm unicast is now mandated to mitigate scalability issues in very large
+systems.
+ArtPollReply unicast is now mandated to mitigate scalability issues in very large
+systems.
+Added Target mode to ArtPoll in order to reduce traffic during discovery.
+Added sACN Priority field to ArtAddress in order that the priority of sACN
+packets generated by DMX input nodes can be set.
+Relationship of the ArtDmx->Physical field to merging has been clarified.
+
+Comments on Revision DF:
+•
+
+Minimum allowed packet length notes added.
+
+Comments on Revision DG:
+•
+•
+
+Enumerations for port direction were missing from ArtAddress. Corrected.
+Removed Artistic Licence product examples.
+
+Comments on Revision DH:
+•
+•
+•
+•
+
+Corrected casting recommendation related to ArtTodData.
+Resolved minor version control issue from Rev DE.
+Text description for ArtTrigger improved.
+Font size issues in ArtPollReply table fixed.
+
+Comments on Revision DI:
+•
+•
+•
+•
+
+Typo in ArtPollReply corrected.
+The historical term “private address” has been replaced by “unicast address”
+ArtDataRequest & ArtDataReply added
+Link to Light Bytes added
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-3-
+
+Comments on Revision DJ:
+•
+•
+•
+•
+
+Allocated ArtPollReply->GoodInputA.0 allocated to show conversion to Art-Net
+or to sACN.
+URL for OEMcodes updated.
+Ambiguity related to ArtTodData broadcast corrected.
+Table order for bit fields improved for readability.
+
+Comments on Revision DK:
+•
+•
+•
+
+Additional commands added to ArtTodControl for improved RDMnet
+compatibility.
+StreamId added to ArtTimeCode.
+ArtPollReply->GoodOutputB updated with two new RDM discovery flags.
+
+Comments on Revision DL:
+•
+•
+•
+•
+•
+
+ArtAddress command definitions clarified to show which are deprecated in ArtNet 4.
+BackgroundQueuePolicy added to ArtPollReply.
+BackgroundQueueSupported added to ArtPollReply.
+Added additional commands to ArtAddress for setting BackgroundQueuePolicy.
+Added RDM Fifo parameters to ArtRdm.
+
+Comments on Revision DM:
+•
+•
+
+Typo in ArtPollReply->Status2 referenced ArtCommand, corrected to
+ArtAddress.
+Ambiguity in ArtPollReply->Status3 used fail-over and failsafe. All references
+changed to failsafe.
+
+Comments on Revision DN:
+•
+
+Clarification to format in ArtPollReply->NodeReport.
+
+Comments on Revision DO:
+•
+
+ArtAddress. Clarifies that setting a port to input will also cause the list of
+subscribers for that port to be flushed (and rebuilt).
+
+Comments on Revision DP:
+•
+
+Clarified that Port-Address = 0 is deprecated.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-4-
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-5-
+
+Art-Net overview:
+Art-Net is an Ethernet protocol based on the TCP/IP protocol suite. Its purpose is to allow
+transfer of large amounts of DMX512 data over a wide area using standard networking
+technology. Art-Net was invented by Wayne Howell, the founder of Artistic Licence. A
+more in-depth description of the protocol is available in his book Light Bytes.
+
+Art-Net 4:
+This latest revision of the protocol implements a number of new features and also
+simplifies the data transfer mechanism. The changes are all based on feedback from
+manufacturers who are using the protocol.
+Art-Net 4 incorporates a new scheme to handle gateways that support multiple DMX
+ports. Previously, gateways that supported more than four DMX ports would need
+multiple IP addresses (multi-homing). This was an annoyance for both users and
+developers and indeed could not be achieved on some hardware platforms. The new
+scheme allows a gateway (or any Art-Net product) to support over 1000 DMX ports. It is
+achieved by adding a field called BindIndex to 4 Art-Net packets, namely: ArtPollReply,
+ArtAddress, ArtInput and ArtTodData. The BindIndex allows all Art-Net devices to identify
+the ‘page of DMX ports’ to which a packet refers.
+The change is, from a developer perspective, very small and will be very quick to a
+product design. It has also been added in such a way that it is 100% backwards
+compatible with previous releases.
+Art-Net can address over 30,000 universes. Previously, each group of 4 DMX ports were
+limited to universes from a consecutive block of 16. Art-Net 4 allows this limit to be
+resolved as the developer can choose to identify each DMX port individually. This simply
+means encoding a single DMX port in each ArtPollReply. Using this mechanism, all DMX
+ports can be assigned a fully independent universe.
+sACN is gaining in popularity as a method of transporting DMX data. However, it lacks
+any ability discover devices, configure devices or transport RDM data. Art-Net 4
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-6-
+
+incorporates the ability to manage sACN by selecting whether a given gateway port
+should convert sACN or Art-Net to the DMX output. This allows users to choose Art-Net
+as the discovery, management and RDM tool, while using sACN for the live control data.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-7-
+
+Developers updating from Art-Net 3 to Art-Net 4 should review the following change
+summary:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+
+ArtPollReply->BindAddress can now be identical in all BindIndex.
+ArtAddress->BindIndex added to discriminate packets from same IP
+ArtInput->BindIndex added to discriminate packets from same IP
+ArtTodData->BindIndex added to discriminate packets from same IP.
+ArtAddress->Command options added to select sACN or Art-Net conversion
+ArtPollReply broadcast not allowed.
+ArtRdm broadcast no longer allowed.
+ArtTodData broadcast no longer allowed.
+ArtPoll Targeting options.
+ArtPollReply – numerous additional bit-fields.
+
+Universe Addressing:
+A theoretical limit of 32,768 universes exists in the Art-Net 4 specification. The actual
+number of universes that can be transmitted is dependent upon both the network
+physical layer and the casting used. The following table provides a rule of thumb.
+
+Addressing
+
+Physical: 10BaseT
+
+Physical: 100BaseT
+
+Unicast
+
+40
+
+400
+
+Physical:
+1000BaseT
+4000+
+
+The Port-Address of each DMX512 Universe is encoded as a 15-bit number as shown in
+the following table.
+
+Bit 15 Bits 14-8
+0
+Net
+Port-Address
+
+Bits 7-4
+Sub-Net
+
+Art-Net 4 Protocol Release V1.4
+
+Bits 3-0
+Universe
+Document Revision 1.4dp 23/10/2025
+
+-8-
+
+The high byte is called the 'Net'. This was introduced at Art-Net 3 and was previously
+zero. The Net has a single value for each node. The high nibble of the low byte is referred
+to as the Sub-Net address and is set to a single value for each Node. The low nibble of
+the low byte is used to define the individual DMX512 Universe within the Node.
+This means that any Node will have:
+•
+
+One “Net” switch.
+
+•
+
+One “Sub-Net” switch.
+
+•
+
+One “Universe” switch for each implemented DMX512 input or output.
+
+A product designer may opt to implement these as hard or soft switches. The PortAddress valid range is 1 – 32,767. The value of zero is deprecated to enhance sACN
+compatibility.
+
+Credits:
+Any person or entity which implements Art-Net in their products shall include a user
+guide credit of: "Art-Net™ Designed by and Copyright Artistic Licence".
+
+Terminology:
+Node: A device that translates DMX512 to or from Art-Net is referred to as a Node.
+Port-Address: one of the 32,768 possible addresses to which a DMX frame can be
+directed. The Port-Address is a 15-bit number composed of Net+Sub-Net+Universe.
+Net: A group of 16 consecutive Sub-Nets or 256 consecutive Universes is referred to as a
+net. There are 128 Nets in total.
+Sub-Net: A group of 16 consecutive universes is referred to as a sub-net. (Not to be
+confused with the subnet mask).
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+-9-
+
+Universe: A single DMX512 frame of 512 channels is referred to as a Universe.
+Kiloverse: A group of 1024 Universes.
+Controller: A central controller or monitoring device (lighting console) is referred to as
+a Controller.
+IP: The IP is the Internet protocol address. It is expressed in either a long word format
+(0x12345678) or dot format (2.255.255.255). Convention is that the former is
+hexadecimal and the latter is decimal. The IP uniquely identifies any Nodes or Controllers
+on a network.
+Subnet Mask: Defines which part of the IP represents the Network address and which
+part represents the Node address. Example: A Sub-Net mask of 255.0.0.0 means that the
+first byte of the IP is the network address and the remaining three bytes are the Node
+address.
+Port: Actual data transmission on Art-Net uses the UDP protocol that operates ‘on top
+of’ the TCP/IP protocol. UDP data transfer operates by transferring data from a specific
+IP:Port on a Node or Controller to a second specific IP:Port on a second Node or
+Controller. Art-Net uses only one port of 0x1936.
+Directed Broadcast: When a network first connects, the Controller does not know the
+number of Nodes on the network, nor does it know their IP addresses. The Directed
+broadcast address allows the Controller to send an ArtPoll to all Nodes on the network.
+Limited Broadcast: Art-Net packets should not be broadcast to the Limited Broadcast
+address of 255.255.255.255.
+Controller: A generic term describing an Art-Net device with the primary task of
+generating control data. For example, a lighting console.
+Media Server: A generic term describing an Art-Net device capable of generating
+control data based on the ‘mx’ Media Extensions to Art-Net.
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 10 -
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 11 -
+
+Ethernet Implementation:
+General Notes:
+All communication is UDP. Each packet format defined in this document forms the Data
+field of an enclosing UDP packet.
+Packet formats are specified in a manner similar to C-language structures, in which all
+data items are considered to be unsigned integers of type INT8, INT16 or INT32
+according to the number of bits. There are no hidden padding bytes, except at the very
+end of a packet, which may be rounded up to a multiple of 2 or 4 bytes. Extra bytes at
+the end of a valid received packet are ignored.
+The protocols are generalised for handling future versions with increased numbers of
+ports.
+Many bit data fields contain unused positions. These may be used in future versions of
+the protocol. They should be transmitted as zero and not tested by receivers.
+All packet definitions are designed such that their length can be increased in future
+revisions, whilst retaining compatibility. For this reason, only minimum packet length is
+checked in this protocol.
+
+Protocol Operation
+A Node operates in one mode, each Node having a unique IP address derived from its
+Ethernet MAC address. The UDP port used as both source and destination is 0x1936.
+
+IP address configuration
+The Art-Net protocol can operate on either a DHCP managed address scheme or using
+static addresses. By default, an Art-Net product will factory start using a Class A IP
+address scheme. This allows Art-Net products to communicate directly and without the
+need for a DHCP server to be connected to the network.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 12 -
+
+IP address configuration - DHCP
+Nodes report whether they are DHCP capable in the ArtPollReply packet. This document
+details packets on the assumption that static addressing is used. When DHCP is used, the
+addressing and subnet masks will be modified as dictated by the DHCP server.
+IP address configuration – Static Addressing
+The use of Class A addressing is allowed within a closed network. It is important to
+ensure that Art-Net data is not routed onto the Internet.
+Products implementing Art-Net should default to the Primary IP address of 2.?.?.?.
+The IP address consists of a 32 bit number designated as A.B.C.D. The bytes B.C.D are
+calculated from the MAC address. The high byte ‘A’ is set to one of two values as shown
+in the following table.
+The MAC address is a 48 bit number designated u:v:w:x:y:z. This is a globally unique
+number. The upper three bytes ‘u:v:w’ are registered to a specific organisation. The
+lower three bytes ‘x:y:z’ are assigned by that organisation. In order to ensure that there
+is minimal possibility of IP address conflicts between different manufacturers supporting
+Art-Net, the product OEM code is added to the MAC address.
+The ‘B’ field of the IP address is calculated by adding the high byte of the OEM code with
+the low byte of the OEM code and the ‘x’ field of the MAC address.
+On power up, the Node checks its configuration for IP addressing mode. If it has been
+programmed to use a custom IP address, the following procedure is not used.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 13 -
+
+Product Switch Settings
+Custom IP Programmed
+Network Switch Off
+Network Switch On
+
+IP Address A.B.C.D
+A
+B
+C
+As Programmed
+2
+x+OEM y
+10
+x+OEM y
+
+Subnet Mask
+D
+z
+z
+
+As Programmed
+255.0.0.0
+255.0.0.0
+
+The sub-net mask is always initialised to 255.0.0.0, unless a custom IP address is in use.
+This means that the network address is the most significant 8 bits and the Node address
+is the least significant 24 bits of the IP address. This is a Class A network address and for
+this reason care must be exercised when connecting to other networks. If an installation
+requires connection of an Art-Net network to another network that has Internet access,
+then the connection must be implemented via a router that filters out the Class A
+addresses.
+IP address Example
+Given the following settings, the IP address calculation will be as follows:
+•
+
+Network Switch = Off
+
+•
+
+MAC address = 12:45:78:98:34:76 (hexadecimal number)
+
+•
+
+OEM code = 0x0010
+
+Calculation:
+•
+
+IP Address A = 2.
+
+•
+
+IP Address B = 168 (0x98 + 0 + 16).
+
+•
+
+IP Address C = 52 (0x34 from MAC address).
+
+•
+
+IP Address D = 118 (0x76 from MAC address).
+
+•
+
+IP Address = 2.168.52.118.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 14 -
+
+Controller Default Poll
+By default, a Controller should poll both the primary and secondary Art-Net addresses:
+•
+
+2.255.255.255:0x1936
+
+Primary Art-Net Address
+
+•
+
+10.255.255.255:0x1936
+
+Secondary Art-Net Address
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 15 -
+
+Art-Net packet definition
+All UDP packets accepted by the Node conform to the Art-Net protocol specification as
+defined below. Any other packets are ignored.
+
+ArtPoll:
+Packet strategy.
+Entity
+All
+
+Direction
+Receive
+Unicast Transmit
+Directed Broadcast
+Limited Broadcast
+
+Action
+Send ArtPollReply.
+Allowed, with Targeted Mode.
+Controller broadcasts this packet to poll all
+Controllers and Nodes on the network.
+Not recommended.
+
+The ArtPoll packet is used to discover the presence of other Controllers, Nodes and
+Media Servers. The ArtPoll packet can be sent by any device, but is usually only sent by
+the Controller. Both Controllers and Nodes respond to the packet.
+A Controller broadcasts an ArtPoll packet to IP address 2.255.255.255 (sub-net mask
+255.0.0.0) at UDP port 0x1936, this is the Directed Broadcast address.
+The Controller may assume a maximum timeout of 3 seconds between sending ArtPoll
+and receiving all ArtPollReply packets. If the Controller does not receive a response in
+this time, it should consider the Node to have disconnected.
+The Controller that broadcasts an ArtPoll should also reply to its own message (by
+unicast) with an ArtPollReply. It is a requirement of Art-Net that all controllers broadcast
+an ArtPoll every 2.5 to 3 seconds. This ensures that any network devices can easily detect
+a disconnect.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 16 -
+
+Multiple Controllers
+Art-Net allows and supports multiple controllers on a network. When there are multiple
+controllers, Nodes will receive ArtPolls from different controllers which may contain
+conflicting diagnostics requirements. This is resolved as follows:
+If any controller requests diagnostics, the node will send diagnostics. (ArtPoll->Flags->2).
+If there are multiple controllers requesting diagnostics, diagnostics shall be broadcast.
+(Ignore ArtPoll->Flags->3).
+The lowest minimum value of Priority shall be used. (Ignore ArtPoll->DiagPriority).
+Targeted Mode
+Targeted mode allows the ArtPoll to define a range of Port-Addresses. Nodes will only
+reply to the ArtPoll is they are subscribed to a Port-Address that is inclusively in the
+range TargetPortAddressBottom to TargetPortAddressTop. The bit field ArtPoll->Flags->5
+is used to enable Targeted Mode.
+Minimum Packet Length
+Consumers of ArtPoll shall accept as valid a packet of length 14 bytes or larger
+(highlighted in grey below). Any missing fields are assumed to be zero. This requirement
+is due to the fact that the length of ArtPoll has increased over the life of the protocol.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 17 -
+
+ArtPoll packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int
+16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+
+Flags
+
+Int8
+
+7-6
+5
+4
+3
+
+2
+
+1
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character
+is a null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+The OpCode defines the class of data
+following ArtPoll within this UDP packet.
+Transmitted low byte first. See Table 1
+for the OpCode listing.
+Set to OpPoll.
+High byte of the Art-Net protocol
+revision number.
+Low byte of the Art-Net protocol revision
+number. Current value 14. Controllers
+should ignore communication with
+nodes using a protocol version lower
+than 14.
+Set behaviour of Node
+Unused, transmit as zero, do not test
+upon receipt.
+0 = Disable Targeted Mode.
+1 = Enable Targeted Mode.
+0 = Enable VLC transmission.
+1 = Disable VLC transmission.
+0 = Diagnostics messages are broadcast.
+(if bit 2).
+1 = Diagnostics messages are unicast. (if
+bit 2).
+0 = Do not send me diagnostics
+messages.
+1 = Send me diagnostics messages.
+0 = Only send ArtPollReply in response to
+an ArtPoll or ArtAddress.
+1 = Send ArtPollReply whenever Node
+conditions change. This selection allows
+the Controller to be informed of changes
+without the need to continuously poll.
+
+Document Revision 1.4dp 23/10/2025
+
+- 18 -
+
+Field
+
+Name
+
+Size
+
+6
+
+DiagPriority
+
+Int8
+
+Bit
+0
+-
+
+7
+
+Int8
+
+-
+
+Int8
+
+-
+
+Int8
+
+-
+
+Int8
+
+-
+
+11
+
+TargetPort
+AddressTopHi
+TargetPort
+AddressTopLo
+TargetPort
+AddressBottomHi
+TargetPort
+AddressBottomLo
+EstaManHi
+
+Int8
+
+-
+
+12
+
+EstaManLo
+
+Int8
+
+-
+
+13
+14
+
+OemHi
+OemLo
+
+Int8
+Int8
+
+-
+
+8
+9
+10
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+0 = Deprecated.
+The lowest priority of diagnostics
+message that should be sent. See Table
+5.
+Top of the range of Port-Addresses to be
+tested if Targeted Mode is active.
+
+Bottom of the range of Port-Addresses
+to be tested if Targeted Mode is active.
+
+The high byte of the ESTA Manufacturer
+code.
+The low byte of the ESTA Manufacturer
+code. The ESTA Manufacturer Code is
+assigned by ESTA and uniquely identifies
+the manufacturer that generated this
+packet.
+The high byte of the Oem code.
+The low byte of the Oem code.
+The Oem code uniquely identifies the
+product sending this packet.
+
+Document Revision 1.4dp 23/10/2025
+
+- 19 -
+
+Table 1 - OpCodes:
+The following table details the legal OpCode values used in Art-Net packets:
+Opcodes
+Name
+OpPoll
+
+Value
+0x2000
+
+OpPollReply
+
+0x2100
+
+OpDiagData
+OpCommand
+
+0x2300
+0x2400
+
+OpDataRequest
+
+0x2700
+
+OpDataReply
+
+0x2800
+
+OpOutput / OpDmx
+
+0x5000
+
+OpNzs
+
+0x5100
+
+OpSync
+
+0x5200
+
+OpAddress
+
+0x6000
+
+OpInput
+
+0x7000
+
+OpTodRequest
+
+0x8000
+
+OpTodData
+
+0x8100
+
+OpTodControl
+
+0x8200
+
+OpRdm
+
+0x8300
+
+Art-Net 4 Protocol Release V1.4
+
+Definition
+This is an ArtPoll packet, no other data is contained
+in this UDP packet.
+This is an ArtPollReply Packet. It contains device
+status information.
+Diagnostics and data logging packet.
+This is an ArtCommand packet. It is used to send text
+based parameter commands.
+This is an ArtDataRequest packet. It is used to
+request data such as products URLs
+This is an ArtDataReply packet. It is used to reply to
+ArtDataRequest packets.
+This is an ArtDmx data packet. It contains zero start
+code DMX512 information for a single Universe.
+This is an ArtNzs data packet. It contains non-zero
+start code (except RDM) DMX512 information for a
+single Universe.
+This is an ArtSync data packet. It is used to force
+synchronous transfer of ArtDmx packets to a node’s
+output.
+This is an ArtAddress packet. It contains remote
+programming information for a Node.
+This is an ArtInput packet. It contains enable –
+disable data for DMX inputs.
+This is an ArtTodRequest packet. It is used to request
+a Table of Devices (ToD) for RDM discovery.
+This is an ArtTodData packet. It is used to send a
+Table of Devices (ToD) for RDM discovery.
+This is an ArtTodControl packet. It is used to send
+RDM discovery control messages.
+This is an ArtRdm packet. It is used to send all non
+discovery RDM messages.
+Document Revision 1.4dp 23/10/2025
+
+- 20 -
+
+Opcodes
+OpRdmSub
+
+0x8400
+
+OpVideoSetup
+
+0xa010
+
+OpVideoPalette
+
+0xa020
+
+OpVideoData
+
+0xa040
+
+OpMacMaster
+OpMacSlave
+OpFirmwareMaster
+
+0xf000
+0xf100
+0xf200
+
+OpFirmwareReply
+
+0xf300
+
+OpFileTnMaster
+OpFileFnMaster
+OpFileFnReply
+OpIpProg
+
+0xf400
+0xf500
+0xf600
+0xf800
+
+OpIpProgReply
+
+0xf900
+
+OpMedia
+
+0x9000
+
+OpMediaPatch
+
+0x9100
+
+OpMediaControl
+
+0x9200
+
+OpMediaContrlReply
+
+0x9300
+
+OpTimeCode
+
+0x9700
+
+Art-Net 4 Protocol Release V1.4
+
+This is an ArtRdmSub packet. It is used to send
+compressed, RDM Sub-Device data.
+This is an ArtVideoSetup packet. It contains video
+screen setup information for nodes that implement
+the extended video features.
+This is an ArtVideoPalette packet. It contains colour
+palette setup information for nodes that implement
+the extended video features.
+This is an ArtVideoData packet. It contains display
+data for nodes that implement the extended video
+features.
+This packet is deprecated.
+This packet is deprecated.
+This is an ArtFirmwareMaster packet. It is used to
+upload new firmware or firmware extensions to the
+Node.
+This is an ArtFirmwareReply packet. It is returned by
+the node to acknowledge receipt of an
+ArtFirmwareMaster packet or ArtFileTnMaster
+packet.
+Uploads user file to node.
+Downloads user file from node.
+Server to Node acknowledge for download packets.
+This is an ArtIpProg packet. It is used to reprogramme the IP address and Mask of the Node.
+This is an ArtIpProgReply packet. It is returned by the
+node to acknowledge receipt of an ArtIpProg packet.
+This is an ArtMedia packet. It is Unicast by a Media
+Server and acted upon by a Controller.
+This is an ArtMediaPatch packet. It is Unicast by a
+Controller and acted upon by a Media Server.
+This is an ArtMediaControl packet. It is Unicast by a
+Controller and acted upon by a Media Server.
+This is an ArtMediaControlReply packet. It is Unicast
+by a Media Server and acted upon by a Controller.
+This is an ArtTimeCode packet. It is used to transport
+Document Revision 1.4dp 23/10/2025
+
+- 21 -
+
+Opcodes
+OpTimeSync
+OpTrigger
+OpDirectory
+OpDirectoryReply
+
+0x9800
+0x9900
+0x9a00
+0x9b00
+
+Art-Net 4 Protocol Release V1.4
+
+time code over the network.
+Used to synchronise real time date and clock
+Used to send trigger macros
+Requests a node's file list
+Replies to OpDirectory with file list
+
+Document Revision 1.4dp 23/10/2025
+
+- 22 -
+
+Table 2 - OemCode:
+The OEM code provides a 16-bit number that uniquely identifies a product.
+The registered OEM codes are detailed in “Art-NetOemCodes.h” which is found in the
+SDK directory of the DMX-Workshop installation.
+The OEM code defines uniquely defines a product and must be registered. The Oem code
+is used by ArtPoll and ArtPollReply.
+Table 3 – NodeReport Codes:
+The following table details the NodeReport codes. TheNodeReport code defines generic
+error, advisory and status messages for both Nodes and Controllers. The NodeReport is
+returned in ArtPollReply.
+Code
+0x0000
+0x0001
+0x0002
+0x0003
+
+Mnemonic
+RcDebug
+RcPowerOk
+RcPowerFail
+RcSocketWr1
+
+0x0004
+
+RcParseFail
+
+0x0005
+
+RcUdpFail
+
+0x0006
+
+RcShNameOk
+
+0x0007
+
+RcLoNameOk
+
+0x0008
+0x0009
+0x000a
+0x000b
+0x000c
+0x000d
+0x000e
+
+RcDmxError
+RcDmxUdpFull
+RcDmxRxFull
+RcSwitchErr
+RcConfigErr
+RcDmxShort
+RcFirmwareFail
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Booted in debug mode (Only used in development)
+Power On Tests successful
+Hardware tests failed at Power On
+Last UDP from Node failed due to truncated length,
+Most likely caused by a collision.
+Unable to identify last UDP transmission. Check
+OpCode and packet length.
+Unable to open Udp Socket in last transmission
+attempt
+Confirms that Port Name programming via ArtAddress,
+was successful.
+Confirms that Long Name programming via
+ArtAddress, was successful.
+DMX512 receive errors detected.
+Ran out of internal DMX transmit buffers.
+Ran out of internal DMX Rx buffers.
+Rx Universe switches conflict.
+Product configuration does not match firmware.
+DMX output short detected. See GoodOutput field.
+Last attempt to upload new firmware failed.
+Document Revision 1.4dp 23/10/2025
+
+- 23 -
+
+Code
+0x000f
+
+Mnemonic
+RcUserFail
+
+0x0010
+
+RcFactoryRes
+
+Description
+User changed switch settings when address locked by
+remote programming. User changes ignored.
+Factory reset has occurred.
+
+Table 4 – Style Codes:
+The following table details the Style codes. The Style code defines the general
+functionality of a Controller. The Style code is returned in ArtPollReply.
+Code
+0x00
+0x01
+0x02
+0x03
+0x04
+0x05
+0x06
+
+Mnemonic
+StNode
+StController
+StMedia
+StRoute
+StBackup
+StConfig
+StVisual
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+A DMX to / from Art-Net device
+A lighting console.
+A Media Server.
+A network routing device.
+A backup device.
+A configuration or diagnostic tool.
+A visualiser.
+
+Document Revision 1.4dp 23/10/2025
+
+- 24 -
+
+ArtPollReply:
+Packet strategy.
+Entity
+All
+devices
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Art-Net action.
+Allowed.
+Not Allowed.
+
+A device, in response to a Controller’s ArtPoll, sends the ArtPollReply. The device should
+wait for a random delay of up to 1s before sending the reply. This mechanism is intended
+to reduce packet bunching when scaling up to very large systems.
+Minimum Packet Length
+Consumers of ArtPollReply shall accept as valid a packet of length 207 (highlighted in
+grey below) bytes or larger. Any missing fields are assumed to be zero. This requirement
+is due to the fact that the length of ArtPollReply has increased over the life of the
+protocol.
+ArtPollReply packet definition
+Field
+
+Name
+
+Size
+
+Bit
+
+Description
+
+1
+
+ID[8]
+
+Int8
+
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+IP Address[4]
+
+Int8
+
+-
+
+4
+
+Port
+
+Int16
+
+-
+
+5
+
+VersInfoH
+
+Int8
+
+-
+
+Array of 8 characters, the final character is a null
+termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpPollReply
+Transmitted low byte first.
+Array containing the Node’s IP address. First
+array entry is most significant byte of address.
+When binding is implemented, bound nodes may
+share the root node’s IP Address and the
+BindIndex is used to differentiate the nodes.
+The Port is always 0x1936
+Transmitted low byte first.
+High byte of Node’s firmware revision number.
+The Controller should only use this field to decide
+if a firmware update should proceed. The
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 25 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+6
+7
+
+VersInfoL
+NetSwitch
+
+Int8
+Int8
+
+-
+
+8
+
+SubSwitch
+
+Int8
+
+-
+
+9
+10
+
+OemHi
+Oem
+
+Int8
+Int8
+
+-
+
+11
+
+Ubea Version
+
+Int8
+
+-
+
+12
+
+Status1
+
+Int8
+
+7-6
+
+5-4
+
+3
+2
+Art-Net 4 Protocol Release V1.4
+
+Description
+convention is that a higher number is a more
+recent release of firmware.
+Low byte of Node’s firmware revision number.
+Bits 14-8 of the 15 bit Port-Address are encoded
+into the bottom 7 bits of this field. This is used in
+combination with SubSwitch and SwIn[] or
+SwOut[] to produce the full universe address.
+Bits 7-4 of the 15 bit Port-Address are encoded
+into the bottom 4 bits of this field. This is used in
+combination with NetSwitch and SwIn[] or
+SwOut[] to produce the full universe address.
+The high byte of the Oem code.
+The low byte of the Oem code.
+The Oem code uniquely identifies the product.
+This field contains the firmware version of the
+User Bios Extension Area (UBEA). If the UBEA is
+not programmed, this field contains zero.
+General Status register containing bit fields as
+follows.
+Indicator state.
+00
+Indicator state unknown.
+01
+Indicators in Locate / Identify Mode.
+10
+Indicators in Mute Mode.
+11
+Indicators in Normal Mode.
+Port-Address Programming Authority
+00
+Port-Address Programming Authority
+unknown.
+01
+All Port-Address set by front panel
+controls.
+10
+All or part of Port-Address
+programmed by network or Web
+browser.
+11
+Not used.
+Not implemented, transmit as zero, receivers do
+not test.
+0 = Normal firmware boot (from flash). Nodes
+
+Document Revision 1.4dp 23/10/2025
+
+- 26 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+1
+
+0
+13
+
+EstaManLo
+
+Int8
+
+-
+
+14
+15
+
+EstaManHi
+PortName [18]
+
+Int8
+Int8
+
+-
+
+16
+
+LongName [64]
+
+Int8
+
+-
+
+17
+
+NodeReport
+[64]
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+that do not support dual boot, clear this field to
+zero.
+1 = Booted from ROM.
+0 = Not capable of Remote Device Management
+(RDM).
+1 = Capable of Remote Device Management
+(RDM).
+0 = UBEA not present or corrupt
+1 = UBEA present
+The ESTA manufacturer code. The ESTA
+Manufacturer Code is assigned by ESTA and
+uniquely identifies the manufacturer that
+generated this packet.
+Hi byte of above
+The array represents a null terminated name for
+each port of the node. The Controller uses the
+ArtAddress packet to program this string. Max
+length is 17 characters plus the null. This is a fixed
+length field, although the string it contains can be
+shorter than the field.
+The array represents a null terminated long name
+for the Node. The Controller uses the ArtAddress
+packet to program this string. Max length is 63
+characters plus the null. This is a fixed length
+field, although the string it contains can be
+shorter than the field. An identical LongName
+must be reported in device with multiple binds.
+The array is a textual report of the Node’s
+operating status or operational errors. It is
+primarily intended for ‘engineering’ data rather
+than ‘end user’ data. The field is formatted as:
+“#xxxx [yyyy] zzzzz…”
+xxxx is a hex status code as defined in Table 3.
+yyyy is a decimal counter that increments every
+time the Node sends an ArtPollResponse and
+rolls over at 9999..
+This allows the controller to monitor event
+
+Document Revision 1.4dp 23/10/2025
+
+- 27 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+18
+
+NumPortsHi
+
+Int8
+
+-
+
+19
+
+NumPortsLo
+
+Int8
+
+-
+
+20
+
+PortTypes [4]
+
+Int8
+
+-
+
+7
+6
+5-0
+
+21
+
+GoodInput [4]
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+7
+6
+5
+4
+3
+
+Description
+changes in the Node.
+zzzz is an English text string defining the status.
+This is a fixed length field, although the string it
+contains can be shorter than the field.
+The high byte of the word describing the number
+of input or output ports. The high byte is for
+future expansion and is currently zero.
+The low byte of the word describing the number
+of input or output ports. If number of inputs is
+not equal to number of outputs, the largest value
+is taken. Zero is a legal value if no input or output
+ports are implemented. The maximum value is 4.
+Nodes can ignore this field as the information is
+implicit in PortTypes[].
+This array defines the operation and protocol of
+each channel. (A product with 4 inputs and 4
+outputs would report 0xc0, 0xc0, 0xc0, 0xc0). The
+array length is fixed, independent of the number
+of inputs or outputs physically available on the
+Node.
+Set is this channel can output data from the ArtNet Network.
+Set if this channel can input onto the Art-Net
+Network.
+000000 = DMX512
+000001 = MIDI
+000010 = Avab
+000011 = Colortran CMX
+000100 = ADB 62.5
+000101 = Art-Net
+000110 = DALI
+This array defines input status of the node.
+Set – Data received.
+Set – Channel includes DMX512 test packets.
+Set – Channel includes DMX512 SIP’s.
+Set – Channel includes DMX512 text packets.
+Set – Input is disabled.
+
+Document Revision 1.4dp 23/10/2025
+
+- 28 -
+
+Field
+
+22
+
+Name
+
+GoodOutputA
+[4]
+
+Size
+
+Int8
+
+Bit
+
+Description
+
+2
+1
+0
+
+Set – Receive errors detected.
+Unused and transmitted as zero.
+Set – Input is selected to convert to sACN. Clr –
+Input is selected to convert to Art-Net.
+This array defines output status of the node.
+Set – ArtDmx or sACN data is being output as
+DMX512 on this port.
+Set – Channel includes DMX512 test packets.
+Set – Channel includes DMX512 SIP’s.
+Set – Channel includes DMX512 text packets.
+Set – Output is merging ArtNet data.
+Set – DMX output short detected on power up
+Set – Merge Mode is LTP.
+Set – Output is selected to convert from sACN. Clr
+– Output is selected to convert to Art-Net.
+Bits 3-0 of the 15 bit Port-Address for each of the
+4 possible input ports are encoded into the low
+nibble.
+Bits 3-0 of the 15 bit Port-Address for each of the
+4 possible output ports are encoded into the low
+nibble.
+The sACN priority value that will be used when
+any received DMX is converted to sACN.
+If the Node supports macro key inputs, this byte
+represents the trigger values. The Node is
+responsible for ‘debouncing’ inputs. When the
+ArtPollReply is set to transmit automatically,
+(Flags Bit 1), the ArtPollReply will be sent on both
+key down and key up events. However, the
+Controller should not assume that only one bit
+position has changed.
+The Macro inputs are used for remote event
+triggering or cueing.
+Bit fields are active high.
+Set – Macro 8 active.
+Set – Macro 7 active.
+
+7
+6
+5
+4
+3
+2
+1
+0
+
+23
+
+SwIn [4]
+
+Int8
+
+-
+
+24
+
+SwOut [4]
+
+Int8
+
+-
+
+25
+
+AcnPriority
+
+Int8
+
+-
+
+26
+
+SwMacro
+
+Int8
+
+-
+
+7
+6
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 29 -
+
+Field
+
+27
+
+Name
+
+SwRemote
+
+Size
+
+Bit
+
+Description
+
+Int8
+
+5
+4
+3
+2
+1
+0
+-
+
+Set – Macro 6 active.
+Set – Macro 5 active.
+Set – Macro 4 active.
+Set – Macro 3 active.
+Set – Macro 2 active.
+Set – Macro 1 active.
+If the Node supports remote trigger inputs, this
+byte represents the trigger values. The Node is
+responsible for ‘debouncing’ inputs. When the
+ArtPollReply is set to transmit automatically,
+(Flags Bit 1), the ArtPollReply will be sent on both
+key down and key up events. However, the
+Controller should not assume that only one bit
+position has changed.
+The Remote inputs are used for remote event
+triggering or cueing.
+Bit fields are active high.
+Set – Remote 8 active.
+Set – Remote 7 active.
+Set – Remote 6 active.
+Set – Remote 5 active.
+Set – Remote 4 active.
+Set – Remote 3 active.
+Set – Remote 2 active.
+Set – Remote 1 active.
+Not used, set to zero
+Not used, set to zero
+Not used, set to zero
+The Style code defines the equipment style of the
+device. See Table 4 for current Style codes.
+MAC Address Hi Byte. Set to zero if node cannot
+supply this information.
+MAC Address
+MAC Address
+MAC Address
+MAC Address
+
+7
+6
+5
+4
+3
+2
+1
+0
+28
+29
+30
+31
+
+Spare
+Spare
+Spare
+Style
+
+Int8
+Int8
+Int8
+Int8
+
+32
+
+MAC Hi
+
+Int8
+
+33
+34
+35
+36
+
+MAC
+MAC
+MAC
+MAC
+
+Int8
+Int8
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 30 -
+
+Field
+
+Name
+
+Size
+
+37
+38
+
+MAC Lo
+BindIp[4]
+
+Int8
+Int8
+
+39
+
+BindIndex
+
+Int8
+
+40
+
+Status2
+
+Int8
+
+Bit
+
+7
+
+6
+
+5
+4
+
+3
+
+2
+1
+0
+
+41
+
+GoodOutputB
+[4]
+
+Int8
+
+7
+6
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+MAC Address Lo Byte
+If this unit is part of a larger or modular product,
+this is the IP of the root device.
+This number represents the order of bound
+devices. A lower number means closer to root
+device. A value of 0 or 1 means root device.
+Clr = Node does not support control of RDM
+using ArtAddress.
+Set = Node supports control of RDM using
+ArtAddress.
+Clr = Node does not support switching of output
+style using ArtAddress.
+Set = Node supports switching of output style
+using ArtAddress.
+Clr = Not squawking.
+Set = squawking.
+Clr = Node not able to switch between Art-Net
+and sACN.
+Set = Node is able to switch between Art-Net and
+sACN.
+Clr = Node supports 8-bit Port-Address (Art-Net
+II).
+Set = Node supports 15-bit Port-Address (Art-Net
+3 or 4).
+Clr = Node is not DHCP capable.
+Set = Node is DHCP capable.
+Clr = Node’s IP is manually configured.
+Set = Node’s IP is DHCP configured.
+Set = Product supports web browser
+configuration.
+This array defines output status of the node.
+Set – RDM is disabled.
+Clr – RDM is enabled.
+Set – Output style is continuous.
+Clr – Output style is delta.
+
+Document Revision 1.4dp 23/10/2025
+
+- 31 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+Description
+
+5
+
+Int8
+
+Set – Discovery is currently not running.
+Clr – Discovery is currently running.
+Set – Background discovery is disabled.
+Clr – Background Discovery is enabled.
+Not used, set to zero
+Not used, set to zero
+Not used, set to zero
+Not used, set to zero
+General Status register containing bit fields as
+follows.
+Failsafe state. How the node behaves in the
+event that network data is lost.
+00
+Hold last state.
+01
+All outputs to zero.
+10
+All outputs to full.
+11
+Playback failsafe scene.
+Set – Node supports programmable failsafe.
+Clr – Node does not support failsafe.
+Set – Node supports LLRP.
+Clr – Node does not support LLRP.
+Set – Node supports switching ports between
+input and output. (PortTypes[] shows the current
+direction)
+Clr – Node does not support switching port
+direction.
+Set – Node supports RDMnet
+Clr – Node does not support RDMnet
+Set – BackgroundQueue is supported
+Clr – BackgroundQueue is not supported
+Set – Background discovery can be disabled or
+enabled by ArtAddress.
+Clr – Background discovery cannot be disabled by
+ArtAddress.
+RDMnet & LLRP Default Responder UID MSB
+
+Int8
+
+RDMnet & LLRP Default Responder UID
+
+4
+
+42
+
+Status3
+
+Int8
+
+3
+2
+1
+0
+7-6
+
+5
+4
+3
+
+2
+1
+0
+
+43
+44
+
+DefaulRespUID
+Hi
+DefaulRespUID
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 32 -
+
+Field
+
+Name
+
+Size
+
+45
+46
+47
+48
+
+DefaulRespUID
+DefaulRespUID
+DefaulRespUID
+DefaulRespUID
+Lo
+UserHi
+UserLo
+RefreshRateHi
+RefreshRateLo
+
+Int8
+Int8
+Int8
+Int8
+
+RDMnet & LLRP Default Responder UID
+RDMnet & LLRP Default Responder UID
+RDMnet & LLRP Default Responder UID
+RDMnet & LLRP Default Responder UID LSB
+
+Int8
+Int8
+Int8
+Int8
+
+53
+
+Background
+QueuePolicy
+
+Int8
+
+54
+
+Filler
+
+10 x
+Int8
+
+Available for user specific data
+Available for user specific data
+Hi byte of RefreshRate
+Lo Byte of RefreshRate. RefreshRate allows the
+device to specify the maximum refresh rate,
+expressed in Hz, at which it can process ArtDmx.
+This is designed to allow refresh rates above
+DMX512 rates, for gateways that implement
+other protocols such as SPI. A value of 0 to 44
+represents the maximum DMX512 rate of 44Hz.
+The BackgroundQueuePolicy defines the method
+by with the node retrieves STATUS_MESSAGE
+and QUEUED_MESSAGE pids from the connected
+RDM devices.
+Value 0 = Collect using STATUS_NONE
+Value 1 = Collect using STATUS_ADVISORY
+Value 2 = Collect using STATUS_WARNING
+Value 3 = Collect using STATUS_ERROR
+Value 4 = Collection disabled.
+Value 5-250 manufacturer defined.
+Value 251-255 reserved.
+Only used when Status3.bit1 = 1.
+Transmit as zero. For future expansion.
+
+49
+50
+51
+52
+
+Art-Net 4 Protocol Release V1.4
+
+Bit
+
+Description
+
+Document Revision 1.4dp 23/10/2025
+
+- 33 -
+
+ArtIpProg:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Controller transmits to a specific node IP address.
+Not Allowed.
+Reply with ArtIpProgReply.
+Not Allowed.
+Not Allowed.
+Reply with ArtIpProgReply.
+Not Allowed.
+Not Allowed.
+
+The ArtIpProg packet allows the IP settings of a Node to be reprogrammed.
+The ArtIpProg packet is unicast by a Controller to a Node. If the Node supports remote
+programming of IP address, it will respond with an ArtIpProgReply packet. In all
+scenarios, the ArtIpProgReply is unicast to the IP address of the sender.
+ArtIpProg packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+6
+7
+
+Filler1
+Filler2
+Command
+
+Int8
+Int8
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpIpProg
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Pad length to match ArtPoll.
+Pad length to match ArtPoll.
+Action this packet as follows:
+Defines the how this packet is processed. If all
+Document Revision 1.4dp 23/10/2025
+
+- 34 -
+
+Field
+
+Name
+
+Size
+
+Bit
+7
+6
+5
+4
+3
+2
+1
+0
+
+8
+
+Filler4
+
+Int8
+
+9
+
+ProgIpHi
+
+Int8
+
+10
+11
+12
+13
+
+ProgIp2
+ProgIp1
+ProgIpLo
+ProgSmHi
+
+Int8
+Int8
+Int8
+Int8
+
+14
+15
+16
+17
+18
+19
+
+ProgSm2
+ProgSm1
+ProgSmLo
+ProgPortHi
+ProgPortLo
+ProgDgHi
+
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+
+20
+21
+22
+23-26
+
+ProgDg2
+ProgDg1
+ProgDgLo
+Spare4-8
+
+Int8
+Int8
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+bits are clear, this is an enquiry only.
+Set to enable any programming.
+Set to enable DHCP (if set ignore lower bits).
+Not used, transmit as zero
+Program Default gateway
+Set to return all three parameters to default
+Program IP Address
+Program Subnet Mask
+Program Port
+Set to zero. Pads data structure for word
+alignment.
+IP Address to be programmed into Node if
+enabled by Command Field
+
+Subnet mask to be programmed into Node if
+enabled by Command Field
+
+(Deprecated)
+Default Gateway to be programmed into Node
+if enabled by Command Field
+
+Transmit as zero, receivers don’t test.
+
+Document Revision 1.4dp 23/10/2025
+
+- 35 -
+
+ArtIpProgReply:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Not Allowed.
+Not Allowed.
+No Action.
+Transmits to specific Controller IP address.
+Not Allowed.
+No Action
+Transmits to specific Controller IP address.
+Not Allowed.
+
+The ArtIpProgReply packet is issued by a Node in response to an ArtIpProg packet. Nodes
+that do not support remote programming of IP address do not reply to ArtIpProg
+packets. In all scenarios, the ArtIpProgReply is unicast to the IP address of the sender.
+ArtIpProgReply packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+OpCode
+ProtVerHi
+ProtVerLo
+Filler1
+Filler2
+Filler3
+Filler4
+ProgIpHi
+ProgIp2
+ProgIp1
+ProgIpLo
+ProgSmHi
+ProgSm2
+
+Int16
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a null
+termination. Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpIpProgReply Transmitted low byte first.
+High byte of the Art-Net protocol revision number.
+Low byte of the Art-Net protocol revision number. (14)
+Pad length to match ArtPoll.
+Pad length to match ArtPoll.
+Pad length to match ArtIpProg.
+Pad length to match ArtIpProg.
+IP Address of Node.
+
+Subnet mask of Node.
+
+Document Revision 1.4dp 23/10/2025
+
+- 36 -
+
+Field
+15
+16
+17
+18
+19
+
+Name
+ProgSm1
+ProgSmLo
+ProgPort Hi
+ProgPort Lo
+Status
+
+Size
+Int8
+Int8
+Int8
+Int8
+Int8
+
+20
+21
+22
+23
+24
+25
+26
+
+Spare2
+ProgDgHi
+ProgDg2
+ProgDg1
+ProgDgLo
+Spare7
+Spare8
+
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+
+(Deprecated).
+Bit 7
+0
+Bit 6
+DHCP enabled.
+Bit 5-0 0
+Transmit as zero, receivers don’t test.
+Default Gateway of Node.
+
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+
+Document Revision 1.4dp 23/10/2025
+
+- 37 -
+
+ArtAddress:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Controller transmits to a specific node IP address.
+Not Allowed.
+Reply by unicasting ArtPollReply.
+Not Allowed.
+Not Allowed.
+Reply by unicasting ArtPollReply.
+Not Allowed.
+Not Allowed.
+
+A Controller or monitoring device on the network can reprogram numerous controls of a
+node remotely. This, for example, would allow the lighting console to re-route DMX512
+data at remote locations. This is achieved by sending an ArtAddress packet to the Node’s
+IP address. (The IP address is returned in the ArtPoll packet). The node replies with an
+ArtPollReply packet.
+Fields 5 to 13 contain the data that will be programmed into the node.
+ArtAddress packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+2
+
+OpCode
+
+Int16
+
+3
+4
+
+ProtVerHi
+ProtVerLo
+
+Int8
+Int8
+
+5
+
+NetSwitch
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a null
+termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpAddress
+Transmitted low byte first.
+High byte of the Art-Net protocol revision number.
+Low byte of the Art-Net protocol revision number.
+Current value 14
+Bits 14-8 of the 15 bit Port-Address are encoded into
+the bottom 7 bits of this field. This is used in
+combination with SubSwitch and SwIn[] or SwOut[] to
+Document Revision 1.4dp 23/10/2025
+
+- 38 -
+
+Field
+
+Name
+
+Size
+
+6
+
+BindIndex
+
+Int8
+
+7
+
+Port Name
+[18]
+
+Int8
+
+8
+
+Long Name
+[64]
+
+Int8
+
+9
+
+SwIn [4]
+
+Int8
+
+10
+
+SwOut [4]
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+produce the full universe address.
+This value is ignored unless bit 7 is high. i.e. to
+program a value 0x07, send the value as 0x87.
+Send 0x00 to reset this value to the physical switch
+setting.
+The BindIndex defines the bound node which
+originated this packet and is used to uniquely identify
+the bound node when identical IP addresses are in
+use. This number represents the order of bound
+devices. A lower number means closer to root device.
+A value of 1 means root device.
+The array represents a null terminated port name for
+port of this Node. The Controller uses the ArtAddress
+packet to program this string. Max length is 17
+characters plus the null. The Node will ignore this
+value if the string is null.
+This is a fixed length field, although the string it
+contains can be shorter than the field.
+The array represents a null terminated long name for
+the Node. The Controller uses the ArtAddress packet
+to program this string. Max length is 63 characters
+plus the null. The Node will ignore this value if the
+string is null.
+This is a fixed length field, although the string it
+contains can be shorter than the field.
+Bits 3-0 of the 15 bit Port-Address for a given input
+port are encoded into the bottom 4 bits of this field.
+This is used in combination with NetSwitch and
+SubSwitch to produce the full universe address.
+This value is ignored unless bit 7 is high. i.e. to
+program a value 0x07, send the value as 0x87.
+Send 0x00 to reset this value to the physical switch
+setting.
+Bits 3-0 of the 15 bit Port-Address for a given output
+port are encoded into the bottom 4 bits of this field.
+This is used in combination with NetSwitch and
+SubSwitch to produce the full universe address.
+Document Revision 1.4dp 23/10/2025
+
+- 39 -
+
+Field
+
+Name
+
+Size
+
+11
+
+SubSwitch
+
+Int8
+
+12
+
+AcnPriority
+
+Int8
+
+13
+
+Command
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+This value is ignored unless bit 7 is high. i.e. to
+program a value 0x07, send the value as 0x87.
+Send 0x00 to reset this value to the physical switch
+setting.
+Bits 7-4 of the 15 bit Port-Address are encoded into
+the bottom 4 bits of this field. This is used in
+combination with NetSwitch and SwIn[] or SwOut[] to
+produce the full universe address.
+This value is ignored unless bit 7 is high. i.e. to
+program a value 0x07, send the value as 0x87.
+Send 0x00 to reset this value to the physical switch
+setting.
+Sets the sACN Priority field for sACN generated on all 4
+ports encoded into this packet. A value of 255
+represents no change. Values of 0 to 200 inclusive are
+valid.
+Node configuration commands:
+Val
+Mnemonic
+Action
+0x00
+AcNone
+No action
+0x01
+AcCancel Merge If Node is currently in
+merge mode, cancel
+merge mode upon receipt
+of next ArtDmx packet.
+See discussion of merge
+mode operation.
+0x02
+AcLedNormal
+The front panel indicators
+of the Node operate
+normally.
+0x03
+AcLedMute
+The front panel indicators
+of the Node are disabled
+and switched off.
+0x04
+AcLedLocate
+Rapid flashing of the
+Node’s front panel
+indicators. It is intended as
+an outlet identifier for
+large installations.
+0x05
+AcResetRx Flags Resets the Node’s Sip,
+Document Revision 1.4dp 23/10/2025
+
+- 40 -
+
+Field
+
+Name
+
+Size
+
+Description
+Text, Test and data error
+flags.
+If an output short is being
+flagged, forces the test to
+re-run.
+0x06
+AcAnalysisOn
+Enable analysis and
+debugging mode.
+0x07
+AcAnalysisOff
+Disable analysis and
+debugging mode.
+Failsafe configuration commands: These settings
+should be retained by the node during power cycling.
+0x08
+AcFailHold
+Set the node to hold last
+state in the event of loss
+of network data.
+0x09
+AcFailZero
+Set the node’s outputs to
+zero in the event of loss of
+network data.
+0x0a
+AcFailFull
+Set the node’s outputs to
+full in the event of loss of
+network data.
+0x0b
+AcFailScene
+Set the node’s outputs to
+play the failsafe scene in
+the event of loss of
+network data.
+0x0c
+AcFailRecord
+Record the current output
+state as the failsafe scene.
+Node configuration commands: Note that Ltp / Htp
+and direction settings should be retained by the node
+during power cycling.
+0x10
+AcMergeLtp0
+Set DMX Port 0 to Merge
+in LTP mode.
+0x11
+AcMergeLtp1
+Set DMX Port 1 to Merge
+in LTP mode. (Deprecated
+in Art-Net 4).
+0x12
+AcMergeLtp2
+Set DMX Port 2 to Merge
+in LTP mode. (Deprecated
+in Art-Net 4).
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 41 -
+
+Field
+
+Name
+
+Size
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+0x13
+AcMergeLtp3
+
+0x20
+
+AcDirectionTx0
+
+0x21
+
+AcDirectionTx1
+
+0x22
+
+AcDirectionTx2
+
+0x23
+
+AcDirectionTx3
+
+0x30
+
+AcDirectionRx0
+
+0x31
+
+AcDirectionRx1
+
+0x32
+
+AcDirectionRx2
+
+0x33
+
+AcDirectionRx3
+
+0x50
+
+AcMergeHtp0
+
+0x51
+
+AcMergeHtp1
+
+0x52
+
+AcMergeHtp2
+
+0x53
+
+AcMergeHtp3
+
+Set DMX Port 3 to Merge
+in LTP mode. (Deprecated
+in Art-Net 4).
+Set Port 0 direction to
+output.
+Set Port 1 direction to
+output. (Deprecated in
+Art-Net 4).
+Set Port 2 direction to
+output. (Deprecated in
+Art-Net 4).
+Set Port 3 direction to
+output. (Deprecated in
+Art-Net 4).
+Set Port 0 direction to
+input. Also flushes the list
+of subscribers for the port.
+Set Port 1 direction to
+input. (Deprecated in ArtNet 4).
+Set Port 2 direction to
+input. (Deprecated in ArtNet 4).
+Set Port 3 direction to
+input. (Deprecated in ArtNet 4).
+Set DMX Port 0 to Merge
+in HTP (default) mode.
+Set DMX Port 1 to Merge
+in HTP (default) mode.
+(Deprecated in Art-Net 4).
+Set DMX Port 2 to Merge
+in HTP (default) mode.
+(Deprecated in Art-Net 4).
+Set DMX Port 3 to Merge
+in HTP (default) mode.
+(Deprecated in Art-Net 4).
+
+Document Revision 1.4dp 23/10/2025
+
+- 42 -
+
+Field
+
+Name
+
+Size
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+0x60
+AcArtNetSel0
+
+0x61
+
+AcArtNetSel1
+
+0x62
+
+AcArtNetSel2
+
+0x63
+
+AcArtNetSel3
+
+0x70
+
+AcAcnSel0
+
+0x71
+
+AcAcnSel1
+
+0x72
+
+AcAcnSel2
+
+0x73
+
+AcAcnSel3
+
+0x90
+
+AcClearOp0
+
+0x91
+
+AcClearOp1
+
+Set DMX Port 0 to Art-Net
+for both DMX512 and
+RDM. (default).
+Set DMX Port 1 to Art-Net
+for both DMX512 and
+RDM. (default).
+(Deprecated in Art-Net 4).
+Set DMX Port 2 to Art-Net
+for both DMX512 and
+RDM. (default).
+(Deprecated in Art-Net 4).
+Set DMX Port 3 to Art-Net
+for both DMX512 and
+RDM. (default).
+(Deprecated in Art-Net 4).
+Set DMX Port 0 to sACN
+for DMX512 data and RDM
+data from the Art-Net
+protocol.
+Set DMX Port 1 to sACN
+for DMX512 data and RDM
+data from the Art-Net
+protocol. (Deprecated in
+Art-Net 4).
+Set DMX Port 2 to sACN
+for DMX512 data and RDM
+data from the Art-Net
+protocol. (Deprecated in
+Art-Net 4).
+Set DMX Port 3 to sACN
+for DMX512 data and RDM
+data from the Art-Net
+protocol. (Deprecated in
+Art-Net 4).
+Clear DMX Output buffer
+for Port 0.
+Clear DMX Output buffer
+
+Document Revision 1.4dp 23/10/2025
+
+- 43 -
+
+Field
+
+Name
+
+Size
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+
+0x92
+
+AcClearOp2
+
+0x93
+
+AcClearOp3
+
+0xa0
+
+AcStyleDelta0
+
+0xa1
+
+AcStyleDelta1
+
+0xa2
+
+AcStyleDelta2
+
+0xa3
+
+AcStyleDelta3
+
+0xb0
+
+AcStyleConst0
+
+0xb1
+
+AcStyleConst1
+
+0xb2
+
+AcStyleConst2
+
+for Port 1. (Deprecated in
+Art-Net 4).
+Clear DMX Output buffer
+for Port 2. (Deprecated in
+Art-Net 4).
+Clear DMX Output buffer
+for Port 3. (Deprecated in
+Art-Net 4).
+Set output style to delta
+mode (DMX frame
+triggered by ArtDmx) for
+Port 0.
+Set output style to delta
+mode (DMX frame
+triggered by ArtDmx) for
+Port 1. (Deprecated in ArtNet 4).
+Set output style to delta
+mode (DMX frame
+triggered by ArtDmx) for
+Port 2. (Deprecated in ArtNet 4).
+Set output style to delta
+mode (DMX frame
+triggered by ArtDmx) for
+Port 3. (Deprecated in ArtNet 4).
+Set output style to
+constant mode (DMX
+output is continuous) for
+Port 0.
+Set output style to
+constant mode (DMX
+output is continuous) for
+Port 1 (Deprecated in ArtNet 4).
+Set output style to
+
+Document Revision 1.4dp 23/10/2025
+
+- 44 -
+
+Field
+
+Name
+
+Size
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+
+0xb3
+
+AcStyleConst3
+
+0xc0
+0xc1
+
+AcRdmEnable0
+AcRdmEnable1
+
+0xc2
+
+AcRdmEnable2
+
+0xc3
+
+AcRdmEnable3
+
+0xd0
+0xd1
+
+AcRdmDisable0
+AcRdmDisable1
+
+0xd2
+
+AcRdmDisable2
+
+0xd3
+
+AcRdmDisable3
+
+0xe0
+
+AcBqp0
+
+0xe1
+
+AcBqp1
+
+0xe2
+
+AcBqp2
+
+0xe3
+
+AcBqp3
+
+constant mode (DMX
+output is continuous) for
+Port 2 (Deprecated in ArtNet 4).
+Set output style to
+constant mode (DMX
+output is continuous) for
+Port 3. (Deprecated in ArtNet 4).
+Enable RDM for Port 0.
+Enable RDM for Port 1.
+(Deprecated in Art-Net 4).
+Enable RDM for Port 2.
+(Deprecated in Art-Net 4).
+Enable RDM for Port 3.
+(Deprecated in Art-Net 4).
+Disable RDM for Port 0.
+Disable RDM for Port 1.
+(Deprecated in Art-Net 4).
+Disable RDM for Port 2.
+(Deprecated in Art-Net 4).
+Disable RDM for Port 3.
+(Deprecated in Art-Net 4).
+Set
+BackgroundQueuePolicy
+to 0 (Collect using
+STATUS_NONE)
+Set
+BackgroundQueuePolicy
+to 1 (Collect using
+STATUS_ADVISORY)
+Set
+BackgroundQueuePolicy
+to 2 (Collect using
+STATUS_WARNING)
+Set
+BackgroundQueuePolicy
+
+Document Revision 1.4dp 23/10/2025
+
+- 45 -
+
+Field
+
+Name
+
+Size
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+
+0xe4
+
+AcBqp4
+
+0xe5
+
+AcBqp5
+
+0xe6
+
+AcBqp6
+
+0xe7
+
+AcBqp7
+
+0xe8
+
+AcBqp8
+
+0xe9
+
+AcBqp9
+
+0xea
+
+AcBqp10
+
+0xeb
+
+AcBqp11
+
+0xec
+
+AcBqp12
+
+0xed
+
+AcBqp13
+
+0xee
+
+AcBqp14
+
+0xef
+
+AcBqp15
+
+to 3 (Collect using
+STATUS_ERROR)
+Set
+BackgroundQueuePolicy
+to 4 (Disabled)
+Set
+BackgroundQueuePolicy
+to 5 (user defined)
+Set
+BackgroundQueuePolicy
+to 6 (user defined)
+Set
+BackgroundQueuePolicy
+to 7 (user defined)
+Set
+BackgroundQueuePolicy
+to 8 (user defined)
+Set
+BackgroundQueuePolicy
+to 9 (user defined)
+Set
+BackgroundQueuePolicy
+to 10 (user defined)
+Set
+BackgroundQueuePolicy
+to 11 (user defined)
+Set
+BackgroundQueuePolicy
+to 12 (user defined)
+Set
+BackgroundQueuePolicy
+to 13 (user defined)
+Set
+BackgroundQueuePolicy
+to 14 (user defined)
+Set
+BackgroundQueuePolicy
+
+Document Revision 1.4dp 23/10/2025
+
+- 46 -
+
+Field
+
+Name
+
+Size
+
+Description
+to 15 (user defined)
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 47 -
+
+ArtDataRequest:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Controller transmits to a specific node IP address.
+Not Allowed.
+Reply by unicasting ArtDataReply.
+Not Allowed.
+Not Allowed.
+Reply by unicasting ArtDataReply.
+Not Allowed.
+Not Allowed.
+
+The ArtDataRequest packet is used to request data such as product URL.
+The ArtDataRequest packet is unicast by a Controller to a Node. If the Node supports this
+feature it will respond by unicasting an ArtDataReply. In all scenarios, the ArtDataReply is
+unicast to the IP address of the sender.
+ArtDataRequest packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+6
+
+EstaManHi
+EstaManLo
+
+Int8
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpDataRequest
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number.
+The high byte of the ESTA Manufacturer code.
+The low byte of the ESTA Manufacturer code.
+The ESTA Manufacturer Code is assigned by
+ESTA and uniquely identifies the manufacturer
+that generated this packet.
+Document Revision 1.4dp 23/10/2025
+
+- 48 -
+
+Field
+7
+8
+
+Name
+OemHi
+OemLo
+
+Size
+Int8
+Int8
+
+9
+10
+11
+
+RequestHi
+RequestLo
+Spare[22]
+
+Int8
+Int8
+Int8
+
+Bit
+-
+
+Description
+The high byte of the Oem code.
+The low byte of the Oem code.
+The Oem code uniquely identifies the product
+sending this packet.
+The data being requested. Hi byte. See Table 4a
+The data being requested. Lo byte.
+Transmit as zero, receivers don’t test.
+
+Table 4a – DataRequest Codes:
+The following table details the DataRequest codes. These codes are used by
+ArtDataRequest and ArtDataReply.
+Code
+0x0000
+
+Mnemonic
+DrPoll
+
+0x0001
+0x0002
+0x0003
+0x0004
+0x0005
+0x80000xffff
+
+DrUrlProduct
+DrUrlUserGuide
+DrUrlSupport
+DrUrlPersUdr
+DrUrlPersGdtf
+DrManSpec
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Controller is polling to establish whether
+ArtDataRequest is supported.
+URL to manufacturer product page.
+URL to manufacturer user guide.
+URL to manufacturer support page.
+URL to manufacture UDR personality.
+URL to manufacture GDTF personality.
+Manufacturer specific use.
+
+Document Revision 1.4dp 23/10/2025
+
+- 49 -
+
+ArtDataReply:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Not Allowed.
+Not Allowed.
+No Action.
+Unicast to specific Controller IP address.
+Not Allowed.
+No Action
+Unicast to specific Controller IP address.
+Not Allowed.
+
+The ArtDataReply packet is unicast by a Node in response to an ArtDataRequest packet.
+In all scenarios, the ArtDataReply is unicast to the IP address of the sender.
+ArtDataReply packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+2
+3
+
+OpCode
+ProtVerHi
+
+Int16
+Int8
+
+4
+
+ProtVerLo
+
+Int8
+
+5
+6
+
+EstaManHi
+EstaManLo
+
+Int8
+Int8
+
+7
+8
+
+OemHi
+OemLo
+
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination. Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’
+0x00
+OpDataReply Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. (14)
+The high byte of the ESTA Manufacturer code.
+The low byte of the ESTA Manufacturer code.
+The ESTA Manufacturer Code is assigned by
+ESTA and uniquely identifies the manufacturer
+that generated this packet.
+The high byte of the Oem code.
+The low byte of the Oem code.
+The Oem code uniquely identifies the product
+sending this packet.
+Document Revision 1.4dp 23/10/2025
+
+- 50 -
+
+Field
+9
+10
+11
+12
+13
+
+Name
+RequestHi
+RequestLo
+PayLenHi
+PayLenLo
+PayLoad[0-512]
+
+Art-Net 4 Protocol Release V1.4
+
+Size
+Int8
+Int8
+Int8
+Int8
+Int8
+
+Description
+The reply contents. Hi byte. See Table 4a
+The reply contents. Lo byte.
+Length of payload. Hi byte.
+Length of payload. Lo byte.
+The reply data. String data to be null
+terminated.
+
+Document Revision 1.4dp 23/10/2025
+
+- 51 -
+
+ArtDiagData:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Application Specific.
+As defined by ArtPoll.
+As defined by ArtPoll.
+No Action
+As defined by ArtPoll.
+As defined by ArtPoll.
+No Action
+As defined by ArtPoll.
+As defined by ArtPoll.
+
+ArtDiagData is a general purpose packet that allows a node or controller to send
+diagnostics data for display.
+The ArtPoll packet sent by controllers defines the destination to which these messages
+should be sent.
+ArtDiagData packet definition
+ArtDiagData
+Field
+Name
+1
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+3
+4
+
+OpCode
+ProtVerHi
+ProtVerLo
+
+Int16
+Int8
+Int8
+
+-
+
+5
+6
+7
+
+Filler1
+DiagPriority
+LogicalPort
+
+Int8
+Int8
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpDiagData, transmitted low byte first.
+High byte of the Art-Net protocol revision.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Ignore by receiver, set to zero by sender.
+The priority of this diagnostic data. See Table 5.
+The logical DMX port of the product to which
+the message relates. Set to zero for general
+messages. This field if purely informational and
+Document Revision 1.4dp 23/10/2025
+
+- 52 -
+
+ArtDiagData
+
+8
+9
+10
+11
+
+Filler3
+LengthHi
+LengthLo
+Data
+[Length]
+
+Int8
+Int8
+Int8
+Int8
+
+-
+
+is designed to allow development tools to filter
+diagnostics.
+Ignore by receiver, set to zero by sender.
+The length of the text array below. High Byte.
+Low Byte.
+ASCII text array, null terminated. Max length is
+512 bytes including the null terminator.
+
+Table 5 – Priority Codes:
+The following table details the Diagnostics Priority codes. These are used in ArtPoll and
+ArtDiagData.
+Code
+0x10
+0x40
+0x80
+0xe0
+0xf0
+
+Mnemonic
+DpLow
+DpMed
+DpHigh
+DpCritical
+DpVolatile
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Low priority message.
+Medium priority message.
+High priority message.
+Critical priority message.
+Volatile message. Messages of this type are displayed
+on a single line in the DMX-Workshop diagnostics
+display. All other types are displayed in a list box.
+
+Document Revision 1.4dp 23/10/2025
+
+- 53 -
+
+ArtTimeCode:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+
+ArtTimeCode allows time code to be transported over the network. The data format is
+compatible with both longitudinal time code and MIDI time code. The four key types of
+Film, EBU, Drop Frame and SMPTE are also encoded.
+Use of the packet is application specific but in general a single controller will broadcast
+the packet to the network.
+ArtTimeCode packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+6
+
+Filler1
+StreamId
+
+Int8
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpTimeCode
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Ignore by receiver, set to zero by sender.
+Used to identify different streams of time code.
+Value of 0x00 is the master.
+Document Revision 1.4dp 23/10/2025
+
+- 54 -
+
+Field
+7
+8
+9
+10
+11
+
+Name
+Frames
+Seconds
+Minutes
+Hours
+Type
+
+Size
+Int8
+Int8
+Int8
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Bit
+-
+
+Description
+Frames time. 0 – 29 depending on mode.
+Seconds. 0 - 59.
+Minutes. 0 - 59.
+Hours. 0 - 23.
+0 = Film (24fps)
+1 = EBU (25fps)
+2 = DF (29.97fps)
+3 = SMPTE (30fps)
+
+Document Revision 1.4dp 23/10/2025
+
+- 55 -
+
+ArtCommand:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+
+The ArtCommand packet is used to send property set style commands. The packet can be
+unicast or broadcast, the decision being application specific.
+ArtCommand packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+
+EstaManHi
+
+Int8
+
+-
+
+6
+7
+8
+
+EstaManLo
+
+Int8
+Int8
+Int8
+
+-
+
+LengthHi
+LengthLo
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpCommand
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+The ESTA manufacturer code. These codes are
+used to represent equipment manufacturer.
+They are assigned by ESTA. This field can be
+interpreted as two ASCII bytes representing the
+manufacturer initials.
+Hi byte of above
+The length of the text array below. High Byte.
+Low Byte.
+Document Revision 1.4dp 23/10/2025
+
+- 56 -
+
+Field
+9
+
+Name
+Data
+[Length]
+
+Size
+Int8
+
+Bit
+-
+
+Description
+ASCII text command string, null terminated.
+Max length is 512 bytes including the null term.
+
+The Data field contains the command text. The text is ASCII encoded and is null
+terminated and is case insensitive. It is legal, although inefficient, to set the Data array
+size to the maximum of 512 and null pad unused entries.
+The command text may contain multiple commands and adheres to the following syntax:
+Command=Data&
+The ampersand is a break between commands. Also note that the text is capitalised for
+readability; it is case insensitive.
+Thus far, two commands are defined by Art-Net. It is anticipated that additional
+commands will be added as other manufacturers register commands which have
+industry wide relevance.
+These commands shall be transmitted with EstaMan = 0xFFFF.
+Table 6 – ArtCommand Commands:
+The following table details the commands defined for use in ArtCommand.
+Command
+SwoutText
+
+SwinText
+
+Description
+This command is used to re-programme the label
+associated with the ArtPollReply->Swout fields.
+Syntax: "SwoutText=Playback&"
+This command is used to re-programme the label
+associated with the ArtPollReply->Swin fields.
+Syntax: "SwinText=Record&"
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 57 -
+
+ArtTrigger:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+Application Specific.
+
+The ArtTrigger packet is used to send trigger macros to the network. The most common
+implementation involves a single controller broadcasting to all other devices.
+In some circumstances a controller may only wish to trigger a single device or a small
+group in which case unicast would be used.
+ArtTrigger packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+3
+
+OpCode
+ProtVerHi
+
+Int16
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+6
+7
+
+Filler1
+Filler2
+OemHi
+
+Int8
+Int8
+Int8
+
+-
+
+8
+
+OemLo
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpTrigger , transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Ignore by receiver, set to zero by sender.
+Ignore by receiver, set to zero by sender.
+The Oem code (high byte) of nodes that shall
+accept this trigger.
+The Oem code (low byte) of nodes that shall
+Document Revision 1.4dp 23/10/2025
+
+- 58 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+9
+10
+11
+
+Key
+SubKey
+Data [512]
+
+Int8
+Int8
+Int8[]
+
+-
+
+Description
+accept this trigger.
+The Trigger Key.
+The Trigger SubKey.
+The interpretation of the payload is defined by
+the Key.
+
+Key
+The Key is an 8-bit number which defines the purpose of the packet. The interpretation
+of this field is dependent upon the Oem code. If the Oem code is set to a value other
+than 0xffff then the Key and SubKey fields are manufacturer specific.
+However, when the Oem code = 0xffff the meaning of the Key, SubKey and Payload is
+defined by Table 7.
+Table 7 – ArtTrigger Key Values.
+The following table details the commands defined for use in ArtCommand.
+Key
+0
+
+Name
+KeyAscii
+
+1
+
+KeyMacro
+
+2
+
+KeySoft
+
+3
+
+KeyShow
+
+4-255
+
+Undefined
+
+Purpose
+The SubKey field contains an ASCII character which the
+receiving device should process as if it were a keyboard
+press. (Payload not used).
+The SubKey field contains the number of a Macro which
+the receiving device should execute. (Payload not used).
+The SubKey field contains a soft-key number which the
+receiving device should process as if it were a soft-key
+keyboard press. (Payload not used).
+The SubKey field contains the number of a Show which
+the receiving device should run. (Payload not used).
+Undefined
+
+SubKey
+The SubKey is an 8-bit number. The interpretation of this field is dependent upon the
+Oem code. If the Oem code is set to a value other than ffff16 then the Key and SubKey
+fields are manufacturer specific.
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 59 -
+
+However, when the Oem code = ffff16 the meaning of the SubKey field is defined by the
+table above.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 60 -
+
+Payload
+The Payload is a fixed length array of 512, bytes. The interpretation of this field is
+dependent upon the Oem code. If the Oem code is set to a value other than 0xffff then
+the Payload is manufacturer specific.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 61 -
+
+ArtDmx:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Application Specific.
+Yes.
+No.
+Application Specific.
+Yes.
+No.
+Application Specific.
+Yes.
+No.
+
+ArtDmx is the data packet used to transfer DMX512 data. The format is identical for
+Node to Controller, Node to Node and Controller to Node.
+The Data is output through the DMX O/P port corresponding to the Universe setting. In
+the absence of received ArtDmx packets, each DMX O/P port re-transmits the same
+frame continuously.
+The first complete DMX frame received at each input port is placed in an ArtDmx packet
+as above and transmitted as an ArtDmx packet containing the relevant Universe
+parameter. Each subsequent DMX frame containing new data (different length or
+different contents) is also transmitted as an ArtDmx packet.
+Nodes do not transmit ArtDmx for DMX512 inputs that have not received data since
+power on.
+However, an input that is active but not changing, will re-transmit the last valid ArtDmx
+packet at approximately 4-second intervals. (Note. In order to converge the needs of ArtNet and sACN it is recommended that Art-Net devices actually use a re-transmit time of
+800mS to 1000mS).
+A DMX input that fails will not continue to transmit ArtDmx data.
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 62 -
+
+Unicast Subscription:
+ArtDmx packets must be unicast to subscribers of the specific universe contained in the
+ArtDmx packet.
+The transmitting device must regularly ArtPoll the network to detect any change in
+devices which are subscribed. Nodes that are subscribed will list the subscription
+universe in the ArtPollReply. Subscribed means any universes listed in either the Swin or
+Swout array.
+If there are no subscribers to a universe, the controller shall not send ArtDmx. There are
+no conditions in which broadcast is allowed.
+ArtDmx packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+
+Sequence
+
+Int8
+
+-
+
+6
+
+Physical
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpOutput
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+The sequence number is used to ensure that
+ArtDmx packets are used in the correct order.
+When Art-Net is carried over a medium such as
+the Internet, it is possible that ArtDmx packets
+will reach the receiver out of order.
+This field is incremented in the range 0x01 to
+0xff to allow the receiving node to re-sequence
+packets.
+The Sequence field is set to 0x00 to disable this
+feature.
+The physical input port from which DMX512
+data was input. This field is used by the
+Document Revision 1.4dp 23/10/2025
+
+- 63 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+7
+
+SubUni
+
+Int8
+
+-
+
+8
+
+Net
+
+Int8
+
+-
+
+9
+
+LengthHi
+
+Int8
+
+-
+
+10
+11
+
+Length
+Data
+[Length]
+
+Int8
+Int8
+
+-
+
+Description
+receiving device to discriminate between
+packets with identical Port-Address that have
+been generated by different input ports and so
+need to be merged.
+The low byte of the 15 bit Port-Address to
+which this packet is destined.
+The top 7 bits of the 15 bit Port-Address to
+which this packet is destined.
+The length of the DMX512 data array. This
+value should be an even number in the range 2
+– 512.
+It represents the number of DMX512 channels
+encoded in packet. NB: Products which convert
+Art-Net to DMX512 may opt to always send 512
+channels.
+High Byte.
+Low Byte of above.
+A variable length array of DMX512 lighting
+data.
+
+Refresh Rate:
+The ArtPollReply-RefreshRate defines the maximum refresh rate that a gateway can
+accept ArtDmx packets. For a gateway outputting DMX512, this will always be the
+maximum rate of 44Hz.
+However, non-DMX512 gateways can declare a higher framerate limit.
+Synchronous Data:
+In video or media-wall applications, the ability to synchronise multiple universes of
+ArtDmx is beneficial. This can be achieved with the ArtSync packet.
+Data Merging:
+The Art-Net protocol allows multiple nodes or controllers to transmit ArtDmx data to the
+same universe.
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 64 -
+
+A node can detect this situation by comparing the IP addresses of received ArtDmx
+packets. If ArtDmx packets addressed to the same Port-Address are received from
+different IP addresses (or different Physical ports on the same IP address), a potential
+conflict exists.
+The Node can legitimately handle this situation using one of two methods:
+•
+
+Consider this to be an error condition and await user intervention.
+
+•
+
+Automatically merge the data.
+
+Nodes should document the approach that is implemented in the product user guide.
+The Merge option is preferred as it provides a higher level of functionality.
+Merge is implemented in either LTP or HTP mode as specified by the ArtAddress packet.
+Merge mode is implemented as follows:
+If ArtDmx with identical Port-Address is received from differing IP addresses, the
+data is merged to the DMX output. In this situation, ArtPollReply-GoodOutputBit3 is set. If Art-Poll-Flags Bit 1 is set, an ArtPollReply should be transmitted
+when merging commences.
+If ArtDmx with identical Port-Address is received from identical IP addresses but
+differing Physical fields, the data is merged to the DMX output. In this situation,
+ArtPollReply-GoodOutput-Bit3 is set. If Art-Poll-Flags Bit 1 is set, an ArtPollReply
+should be transmitted when merging commences.
+Exit from Merge mode is handled as follows:
+If ArtAddress AcCancelMerge is received, the Next ArtDmx message received
+ends Merge mode. The Node then discards any ArtDmx packets received from
+an IP address that does not match the IP address of the ArtDmx packet that
+terminated Merge mode.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 65 -
+
+If either (but not both) sources of ArtDmx stop, the failed source is held in the
+merge buffer for 10 seconds. If, during the 10 second timeout, the failed source
+returns, Merge mode continues. If the failed source does not recover, at the
+end of the timeout period, the Node exits Merge mode.
+If both sources of ArtDmx fail, the output holds the last merge result.
+Merging is limited to two sources, any additional sources will be ignored by the Node.
+The Merge implementation allows for the following two key modes of operation.
+•
+
+Combined Control: Two Controllers (Consoles) can operate on a network and
+merge data to multiple Nodes.
+
+•
+
+Backup: One Controller (Console) can monitor the network for a failure of the
+primary Controller. If a failure occurs, it can use the ArtAddress AcCancelMerge
+command to take instant control of the network.
+
+When a node provides multiple DMX512 inputs, it is the responsibility of the Node to
+handle merging of data. This is because the Node will have only one IP address. If this
+were not handled at the Node, ArtDmx packets with identical IP addresses and identical
+universe numbers, but conflicting level data would be transmitted to the network.
+
+ArtSync:
+Packet strategy.
+Entity
+Controller
+
+Direction
+Receive
+Unicast Transmit
+Directed Broadcast
+
+Node
+
+Receive
+Unicast Transmit
+Broadcast
+
+Art-Net 4 Protocol Release V1.4
+
+Action
+No action.
+Not Allowed.
+Controller broadcasts this packet to synchronously
+transfer previous ArtDmx packets to Node’s
+output.
+Transfer previous ArtDmx packets to output.
+Not Allowed.
+Not Allowed.
+Document Revision 1.4dp 23/10/2025
+
+- 66 -
+
+Entity
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Transfer previous ArtDmx packets to output.
+Not Allowed.
+Not Allowed.
+
+The ArtSync packet can be used to force nodes to synchronously output ArtDmx packets
+to their outputs. This is useful in video and media-wall applications.
+A controller that wishes to implement synchronous transmission will unicast multiple
+universes of ArtDmx and then broadcast an ArtSync to synchronously transfer all the
+ArtDmx packets to the nodes’ outputs at the same time.
+Managing Synchronous and non-Synchronous modes
+At power on or reset a node shall operate in non-synchronous mode. This means that
+ArtDmx packets will be immediately processed and output.
+When a node receives an ArtSync packet it should transfer to synchronous operation.
+This means that received ArtDmx packets will be buffered and output when the next
+ArtSync is received.
+In order to allow transition between synchronous and non-synchronous modes, a node
+shall time out to non-synchronous operation if an ArtSync is not received for 4 seconds
+or more.
+ArtSync packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+The OpCode defines the class of data within
+this UDP packet.
+Transmitted low byte first. See Table 1 for the
+OpCode listing.
+Set to OpSync.
+High byte of the Art-Net protocol revision
+Document Revision 1.4dp 23/10/2025
+
+- 67 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+6
+
+Aux1
+Aux2
+
+Int8
+Int8
+
+-
+
+Description
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14. Controllers should
+ignore communication with nodes using a
+protocol version lower than 14.
+Transmit as zero.
+Transmit as zero.
+
+Multiple controllers
+In order to allow for multiple controllers on a network, a node shall compare the source
+IP of the ArtSync to the source IP of the most recent ArtDmx packet. The ArtSync shall be
+ignored if the IP addresses do not match.
+When a port is merging multiple streams of ArtDmx from different IP addresses, ArtSync
+packets shall be ignored.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 68 -
+
+ArtNzs:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Application Specific.
+Yes.
+No.
+Application Specific.
+Yes.
+No.
+Application Specific.
+Yes.
+No.
+
+ArtNzs is the data packet used to transfer DMX512 data with non-zero start codes
+(except RDM). The format is identical for Node to Controller, Node to Node and
+Controller to Node.
+ArtNzs packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+
+Sequence
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpNzs
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+The sequence number is used to ensure that
+ArtNzs packets are used in the correct order.
+When Art-Net is carried over a medium such as
+the Internet, it is possible that ArtNzs packets
+will reach the receiver out of order.
+Document Revision 1.4dp 23/10/2025
+
+- 69 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+6
+
+StartCode
+
+Int8
+
+-
+
+7
+
+SubUni
+
+Int8
+
+-
+
+8
+
+Net
+
+Int8
+
+-
+
+9
+
+LengthHi
+
+Int8
+
+-
+
+10
+11
+
+Length
+Data
+[Length]
+
+Int8
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+This field is incremented in the range 0x01 to
+0xff to allow the receiving node to resequence
+packets.
+The Sequence field is set to 0x00 to disable this
+feature.
+The DMX512 start code of this packet. Must not
+be Zero or RDM.
+The low byte of the 15 bit Port-Address to
+which this packet is destined.
+The top 7 bits of the 15 bit Port-Address to
+which this packet is destined.
+The length of the data array. This value should
+be a number in the range 1 – 512.
+It represents the number of DMX512 channels
+encoded in packet.
+High Byte.
+Low Byte of above.
+A variable length array of DMX512 lighting
+data.
+
+Document Revision 1.4dp 23/10/2025
+
+- 70 -
+
+ArtVlc:
+ArtVlc is a specific implementation of the ArtNzs packet which is used for the transfer of
+VLC (Visible Light Communication) data over Art-Net. (The packet’s payload can also be
+used to transfer VLC over a DMX512 physical layer).
+Fields 2, 6, 11, 12 and 13 should be treated as ‘magic numbers’ to detect this packet.
+ArtVlc packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+
+Sequence
+
+Int8
+
+-
+
+6
+
+StartCode
+
+Int8
+
+-
+
+7
+
+SubUni
+
+Int8
+
+-
+
+8
+
+Net
+
+Int8
+
+-
+
+9
+
+LengthHi
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpNzs
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+The sequence number is used to ensure that
+ArtNzs packets are used in the correct order.
+When Art-Net is carried over a medium such as
+the Internet, it is possible that ArtNzs packets
+will reach the receiver out of order.
+This field is incremented in the range 0x01 to
+0xff to allow the receiving node to resequence
+packets.
+The Sequence field is set to 0x00 to disable this
+feature.
+The DMX512 start code of this packet is set to
+9116. No other values are allowed.
+The low byte of the 15 bit Port-Address to
+which this packet is destined.
+The top 7 bits of the 15 bit Port-Address to
+which this packet is destined.
+The length of the Vlc data array. This value
+Document Revision 1.4dp 23/10/2025
+
+- 71 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+10
+11
+
+Length
+Vlc [Length]
+
+Int8
+
+-
+
+11
+
+Vlc[0]
+ManIdHi
+Vlc[1]
+ManIdLo
+Vlc[2]
+SubCode
+Vlc[3]
+Flags
+Flags.Ieee
+
+Int8
+
+-
+
+Description
+should be in the range 1 – 512.
+It represents the number of DMX512 channels
+encoded in packet.
+High Byte.
+Low Byte of above.
+A variable length array of VLC data as described
+below:
+4116 Magic number used to identify this packet.
+
+Int8
+
+-
+
+4C16 Magic number used to identify this packet.
+
+Int8
+
+-
+
+4516 Magic number used to identify this packet.
+
+12
+13
+14
+
+Int8
+7
+
+Flags.Reply
+
+6
+
+Flags.Beacon
+
+5
+
+15
+
+Vlc[4]
+TransHi
+
+Int8
+
+-
+
+16
+
+Vlc[5]
+TransLo
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Bit fields used to control VLC operation. Bits
+that are unused shall be transmitted as zero.
+If set, data in the payload area shall be
+interpreted as IEEE VLC data.
+If clear, PayLanguage defines the payload
+contents.
+If set this is a reply packet that is in response to
+the request sent with matching number in the
+transaction number: TransHi/Lo.
+If clear this is not a reply.
+If set, the transmitter should continuously
+repeat transmission of this packet until another
+is received.
+If clear, the transmitter should transmit this
+packet once.
+The transaction number is a 16-bit value which
+allows VLC transactions to be synchronised. A
+value of 0 indicates the first packet in a
+transaction. A value of ffff16 indicates the final
+packet in the transaction. All other packets
+contain consecutive numbers which increment
+on each packet and roll over to 1 at fffe 16.
+Lo byte of above
+Document Revision 1.4dp 23/10/2025
+
+- 72 -
+
+Field
+17
+
+Name
+Vlc[6]
+SlotAddrHi
+
+Size
+Int8
+
+Bit
+-
+
+18
+
+Vlc[7]
+SlotAddrLo
+Vlc[8]
+PayCountHi
+Vlc[9]
+PayCountLo
+Vlc[10]
+PayCheckHi
+Vlc[11]
+PayCheckLo
+Vlc[12]
+Spare1
+Vlc[13]
+VlcDepth
+
+Int8
+
+-
+
+Description
+The slot number, range 1-512, of the device to
+which this packet is directed. A value 0f 0
+indicates that all devices attached to this
+packet’s Port-Address should accept the
+packet.
+Lo byte of above
+
+Int8
+
+-
+
+The 16-bit payload size in the range 0 to 48010.
+
+Int8
+
+-
+
+Lo byte of above
+
+Int8
+
+-
+
+Int8
+
+-
+
+The 16-bit unsigned additive checksum of the
+data in the payload.
+Lo byte of above
+
+Int8
+
+-
+
+Transmit as zero, receive does not check.
+
+Int8
+
+-
+
+25
+
+Vlc[14]
+VlcFreqHi
+
+Int8
+
+-
+
+26
+
+Vlc[15]
+VlcFreqLo
+Vlc[16]
+VlcModHi
+
+Int8
+
+-
+
+The 8-bit VLC modulation depth expressed as a
+percentage in the range 1 to 100. A value of 0
+indicates that the transmitter should use its
+default value
+The 16-bit modulation frequency of the VLC
+transmitter expressed in Hz. A value of 0
+indicates that the transmitter should use its
+default value.
+Lo byte of above
+
+Int8
+
+-
+
+The 16-bit modulation type number that the
+transmitter should use to transmit VLC.
+000016 – Use transmitter default.
+
+Vlc[17]
+VlcModLo
+Vlc[18]
+PayLangHi
+
+Int8
+
+-
+
+Lo byte of above
+
+Int8
+
+-
+
+The 16-bit payload language code. Currently
+registered values:
+000016 – BeaconURL – Payload contains a
+simple text string representing a URL.
+
+19
+20
+21
+22
+23
+24
+
+27
+
+28
+29
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 73 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+30
+
+Vlc[19]
+PayLangLo
+Vlc[20]
+BeacRepHi
+
+Int8
+
+-
+
+Int8
+
+-
+
+The 16-bit beacon mode repeat frequency. If
+Flags.Beacon is set, this 16-bit value indicates
+the frequency in Hertz at which the VLC packet
+should be repeated.
+000016 – Use transmitter default.
+
+Vlc[21]
+BeacRepLo
+Vlc[22]
+Payload
+
+Int8
+
+-
+
+Lo byte of above
+
+Var
+
+-
+
+The actual VLC payload.
+
+31
+
+32
+33
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+000116 – BeaconText – Payload contains a
+simple ASCII text message.
+000216 – BeaconLocationID – Payload contains
+a big-endian 16-bit number.
+Lo byte of above
+
+Document Revision 1.4dp 23/10/2025
+
+- 74 -
+
+ArtInput:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Controller transmits to a specific node IP address.
+Not Allowed.
+Reply with ArtPollReply.
+Not Allowed.
+Not Allowed.
+Reply with ArtPollReply.
+Not Allowed.
+Not Allowed.
+
+A Controller or monitoring device on the network can enable or disable individual
+DMX512 inputs on any of the network nodes. This allows the Controller to directly
+control network traffic and ensures that unused inputs are disabled and therefore not
+wasting bandwidth.
+All nodes power on with all inputs enabled.
+Caution should be exercised when implementing this function in the controller. Keep in
+mind that some network traffic may be operating on a node to node basis.
+ArtInput packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpInput
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Document Revision 1.4dp 23/10/2025
+
+- 75 -
+
+Field
+5
+6
+
+Name
+Filler1
+BindIndex
+
+Size
+Int8
+Int8
+
+Bit
+-
+
+7
+
+NumPortsHi
+
+Int8
+
+-
+
+8
+
+NumPortsL
+o
+
+Int8
+
+-
+
+9
+
+Input [4]
+
+Int8
+
+-
+
+7-1
+0
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Pad length to match ArtPoll.
+The BindIndex defines the bound node which
+originated this packet and is used to uniquely
+identify the bound node when identical IP
+addresses are in use. This number represents
+the order of bound devices. A lower number
+means closer to root device. A value of 1
+means root device.
+The high byte of the word describing the
+number of input or output ports. The high
+byte is for future expansion and is currently
+zero.
+The low byte of the word describing the
+number of input or output ports. If number of
+inputs is not equal to number of outputs, the
+largest value is taken. The maximum value is
+4.
+This array defines input disable status of each
+channel. (Example = 0x01, 0x00, 0x01, 0x00
+to disable first and third inputs)
+Not currently used
+Set to disable this input.
+
+Document Revision 1.4dp 23/10/2025
+
+- 76 -
+
+Firmware and UBEA upgrades:
+This section defines the packets used to send firmware revisions to a node. In all
+instances, communication is private. Under no circumstances should the broadcast
+address be used.
+The transaction involves the controller sending multiple ArtFirmwareMaster packets to a
+Node’s IP address. Each packet is acknowledged by the Node with an ArtFirmwareReply.
+The controller allows a 30 second maximum delay for reception of the
+ArtFirmwareReply.
+If the reply is not received in this time, the controller aborts the transaction. The large
+time period is to allow for Nodes that are writing directly to slow non-volatile memory.
+The Node allows a 30 second delay between sending an ArtFirmwareReply and receipt of
+the next consecutive ArtFirmwareMaster. If the next consecutive block is not received
+within this time, the Node aborts the transaction. In this instance the Node returns to its
+previous operating system and sets ArtPollReply->Status and ArtPollReply ->NodeReport
+accordingly.
+The firmware update file contains a header that defines the Node OEM codes that are
+valid for this update. The Controller must check this value before sending to a Node. The
+Node also checks this data on receipt of the first packet. If the Node receives a packet
+with an invalid code, it sends an error response.
+The UBEA is the User Bios Expansion Area. This is a limited firmware upload mechanism
+that allows third party firmware extensions to be added to a Node.
+Manufacturers who implement this feature must document the software interface
+requirements.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 77 -
+
+ArtFirmwareMaster:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Controller transmits to a specific node IP address.
+Not Allowed.
+Reply with OpFirmwareReply.
+Not Allowed.
+Not Allowed.
+Reply with OpFirmwareReply.
+Not Allowed.
+Not Allowed.
+
+ArtFirmwareMaster packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+6
+7
+
+Filler1
+Filler2
+Type
+
+Int8
+Int8
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpFirmwareMaster.
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Pad length to match ArtPoll.
+Pad length to match ArtPoll.
+Defines the packet contents as follows:
+Value
+Mnemonic
+Function
+0x00
+FirmFirst
+The first packet of a
+firmware upload.
+0x01
+FirmCont
+A consecutive
+continuation packet of
+a firmware upload.
+0x02
+FirmLast
+The last packet of a
+firmware upload.
+Document Revision 1.4dp 23/10/2025
+
+- 78 -
+
+Field
+
+Name
+
+Size
+
+Bit
+
+Description
+0x03
+UbeaFirst
+
+The first packet of a
+UBEA upload.
+0x04
+UbeaCont
+A consecutive
+continuation packet of
+a UBEA upload.
+0x05
+UbeaLast
+The last packet of a
+UBEA upload.
+Counts the consecutive blocks of firmware
+upload. Starting at 0x00 for the FirmFirst or
+UbeaFirst packet.
+This Int64 parameter describes the total
+number of words (Int16) in the firmware
+upload plus the firmware header size. Eg a 32K
+word upload plus 530 words of header
+information == 0x00008212. This value is also
+the file size (in words) of the file to be
+uploaded.
+
+8
+
+BlockId
+
+Int8
+
+-
+
+9
+
+Firmware
+Length3
+
+Int8
+
+-
+
+10
+
+Firmware
+Length2
+Firmware
+Length1
+Firmware
+Length0
+Spare[20]
+Data[512]
+
+Int8
+
+-
+
+Int8
+
+-
+
+Int8
+
+-
+
+LSB
+
+Int8
+Int16
+
+-
+
+Controller sets to zero, Node does not test.
+This array contains the firmware or UBEA data
+block. The order is hi byte first. The
+interpretation of this data is manufacturer
+specific. Final packet should be null packed if
+less than 512 bytes needed.
+
+11
+12
+13
+14
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 79 -
+
+ArtFirmwareReply:
+Packet strategy.
+Entity
+Controller
+
+Node
+
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+Send next OpFirmwareMaster.
+Not Allowed.
+Not Allowed.
+No Action.
+Node transmits to a specific Controller IP address.
+Not Allowed.
+No Action.
+Node transmits to a specific Controller IP address.
+Not Allowed.
+
+This packet is sent by the Node to the Controller in acknowledgement of each
+OpFirmwareMaster packet.
+ArtFirmwareReply packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+4
+
+ProtVerLo
+
+Int8
+
+-
+
+5
+6
+7
+
+Filler1
+Filler2
+Type
+
+Int8
+Int8
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpFirmwareReply.
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Pad length to match ArtPoll.
+Pad length to match ArtPoll.
+Defines the packet contents as follows. Codes
+are used for both firmware and UBEA.
+Value
+Mnemonic
+Function
+0x00
+FirmBlockGood
+Last packet
+received
+successfully.
+Document Revision 1.4dp 23/10/2025
+
+- 80 -
+
+Field
+
+8
+
+Name
+
+Spare[21]
+
+Size
+
+Int8
+
+Bit
+
+-
+
+Description
+0x01
+FirmAll Good
+
+All firmware
+received
+successfully.
+0xff
+FirmFail
+Firmware upload
+failed. (All error
+conditions).
+Node sets to zero, Controller does not test.
+
+Firmware File Format:
+All firmware and UBEA upload files should be of the following format.
+The firmware file extension is .alf.
+The UBEA file extension is .alu.
+Byte
+1
+
+Name
+ChecksumHi
+
+2
+3
+
+ChecksumLo
+VersInfoHi
+
+4
+5-34
+
+VersInfoLo
+UserName
+
+35546
+
+Oem[256]
+
+5471056
+
+Spare[255]
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+This is a 16 bit, one’s-complement checksum of the
+firmware data area.
+LSB of above
+High byte of Node’s firmware revision number. The
+Controller should only use this field to decide if a
+firmware update should proceed. The convention is that
+a higher number is a more recent release of firmware.
+LSB of above
+30 byte field of user name information. This information
+is not checked by the Node. It is purely for display by the
+Controller. It should contain a human readable
+description of file and version number. Whilst this is a
+fixed length field, it must contain a null termination.
+An array of 256 words. Each word is hi byte first and
+represents an Oem code for which this file is valid.
+Unused entries must be filled with 0x0000.
+An array of 255 words. Currently unused and should be
+set to zero.
+Document Revision 1.4dp 23/10/2025
+
+- 81 -
+
+Byte
+1057
+
+Name
+Length3
+
+1058
+1059
+1060
+1061
+
+Length2
+Length1
+Length0
+Data[]
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+The total length in words of the firmware information
+following this field.
+
+LSB
+The firmware data as an array of 16 bit values ordered
+hi byte first. The actual data is manufacturer specific.
+
+Document Revision 1.4dp 23/10/2025
+
+- 82 -
+
+RDM Support:
+This section defines the packet structure used to gate the Remote Device Management
+(RDM) protocol across Art-Net. It is assumed that the reader is familiar with the RDM
+document.
+Art-Net devices support RDM as follows:
+•
+
+All RDM discovery commands are proxied; Art-Net devices hold local RDM
+device lists and conduct their own discovery.
+
+•
+
+All RDM Get / Set commands are non-proxied; they are passed to end devices
+for response.
+
+This document defines the following terms:
+Input Gateway: A device that inputs DMX512 onto the Art-Net network.
+Output Gateway: A device that outputs DMX512 from the Art-Net network.
+Table of Devices (TOD): The list of RDM devices maintained by both Input and Output
+Gateways.
+
+RDM Discovery
+Output Gateway Operation
+Output Gateways perform RDM discovery independent of network operation. This
+includes full discovery upon power-on and incremental discovery as a background task.
+The Output Gateway informs the network about its TOD as follows:
+Upon receipt of an ArtTodRequest packet, the Output Gateways responds with
+ArtTodData packet(s) containing the entire TOD. All Input Gateways parse the
+ArtTodData packets. If the Sub-Net and Universe fields match, the Input Gateway adds
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 83 -
+
+the TOD contents to their own internal TOD. This allows Input Gateways to respond to
+any physical layer RDM discovery commands they receive.
+Upon completion of initial RDM discovery, Output Gateways unicast their TOD in an
+ArtTodData packet, to all IP addresses that have previously requested an ArtTodData
+packet.
+When an RDM device is added to or removed from the Output Gateway’s TOD (during
+incremental discovery), an ArtTodData packet is unicast to all IP addresses that have
+previously requested an ArtTodData packet.
+Input Gateway Operation
+Input Gateways generate a TOD by monitoring Art-Net traffic. The TOD is then used to
+reply to RDM discovery commands by proxy. Operation is as follows:
+Upon power-on, Input Gateways Directed Broadcast an ArtTodRequest packet.
+The network is monitored for ArtTodData packets. If the Sub-Net and Universe fields
+match, the Input Gateway adds the TOD contents to its own internal TOD. This allows
+Input Gateways to respond to any RDM discovery commands they receive.
+Input Gateways do not transmit any RDM discovery messages to the network.
+Controller Operation:
+Controllers emulate the operation of Input Gateways.
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 84 -
+
+ArtTodRequest:
+This packet is used to request the Table of RDM Devices (TOD). A Node receiving this
+packet must not interpret it as forcing full discovery. Full discovery is only initiated at
+power on or when an ArtTodControl.AtcFlush is received. The response is ArtTodData.
+Packet strategy.
+Entity
+Controller
+
+Node
+Output
+Gateway
+Node Input
+Gateway
+
+Media
+Server
+
+Direction
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+
+Action
+No Action.
+Allowed.
+Allowed.
+Reply with ArtTodData.
+Not Allowed.
+Not Allowed.
+No Action.
+Not Allowed.
+Input Gateway Directed Broadcasts to all nodes.
+No Action.
+Not Allowed.
+Not Allowed.
+
+ArtTodRequest packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+Bit
+-
+
+2
+
+OpCode
+
+Int16
+
+-
+
+3
+
+ProtVerHi
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a
+null termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpTodRequest.
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+number.
+Document Revision 1.4dp 23/10/2025
+
+- 85 -
+
+Field
+4
+
+Name
+ProtVerLo
+
+Size
+Int8
+
+Bit
+-
+
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+Filler1
+Filler2
+Spare1
+Spare2
+Spare3
+Spare4
+Spare5
+Spare6
+Spare7
+Net
+
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+
+-
+
+15
+
+Command
+
+Int8
+
+-
+
+16
+
+AddCount
+
+Int8
+
+-
+
+17
+
+Address
+[32]
+
+Int8
+
+-
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Pad length to match ArtPoll.
+Pad length to match ArtPoll.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+The top 7 bits of the 15 bit Port-Address of
+Nodes that must respond to this packet.
+Value
+Mnemonic
+Function
+0x00
+TodFull
+Send the
+entire TOD.
+The number of entries in Address that are used.
+Max value is 32.
+This array defines the low byte of the PortAddress of the Output Gateway nodes that
+must respond to this packet. This is combined
+with the 'Net' field above to form the 15 bit
+address.
+
+Document Revision 1.4dp 23/10/2025
+
+- 86 -
+
+ArtTodData:
+Packet strategy.
+Entity
+Controller
+
+Node
+Output
+Gateway
+Node Input
+Gateway
+
+Media
+Server
+
+Direction
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+
+Action
+No Action.
+Not Allowed.
+
+Broadcast
+
+Not Allowed.
+
+Not Allowed.
+No Action.
+Allowed.
+Not Allowed.
+No Action.
+Allowed.
+Not Allowed.
+No Action.
+Not Allowed.
+
+ArtTodData packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+2
+
+OpCode
+
+Int16
+
+3
+4
+
+ProtVerHi
+ProtVerLo
+
+Int8
+Int8
+
+5
+
+RdmVer
+
+Int8
+
+6
+
+Port
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a null
+termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpTodData.
+Transmitted low byte first.
+High byte of the Art-Net protocol revision number.
+Low byte of the Art-Net protocol revision number.
+Current value 14
+Art-Net Devices that only support RDM DRAFT V1.0
+set field to 0x00. Devices that support RDM
+STANDARD V1.0 set field to 0x01.
+Physical port index. Range 1-4. This number is used
+Document Revision 1.4dp 23/10/2025
+
+- 87 -
+
+Field
+
+Name
+
+Size
+
+Description
+in combination with BindIndex to identify the
+physical port that generated the packet. This is done
+by referencing data in the ArtPollReply with a
+matching BindIndex:
+ArtPollReplyData->BindIndex == ArtTodData>BindIndex
+An ArtPollReply can encode between 1 and 4
+physical ports, defined by ArtPollReply>NumPortsLo. This number must be used when
+calculating the physical port in order to allow for the
+variable encoding.
+The calculation is:
+Physical Port = (BindIndex-1) * ArtPollReply>NumPortsLo + ArtTodData->Port
+As most modern Art-Net gateways implement one
+universe per ArtPollReply, ArtTodData->Port will
+usually be set to a value of 1.
+
+7
+8
+9
+10
+11
+12
+13
+
+Spare1
+Spare2
+Spare3
+Spare4
+Spare5
+Spare6
+BindIndex
+
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+The BindIndex defines the bound node which
+originated this packet. In combination with Port and
+Source IP address, it uniquely identifies the sender.
+This must match the BindIndex field in ArtPollReply.
+This number represents the order of bound devices.
+A lower number means closer to root device. A value
+of 1 means root device.
+Document Revision 1.4dp 23/10/2025
+
+- 88 -
+
+Field
+14
+
+Name
+Net
+
+Size
+Int8
+
+15
+
+Command
+Response
+
+Int8
+
+Description
+The top 7 bits of the Port-Address of the Output
+Gateway DMX Port that generated this packet.
+Defines the packet contents as follows.
+Valu
+e
+0x00
+
+16
+
+Address
+
+Int8
+
+17
+
+UidTotalHi
+
+Int8
+
+18
+19
+
+UidTotalLo
+BlockCount
+
+Int8
+Int8
+
+20
+
+UidCount
+
+Int8
+
+21
+
+ToD
+[UidCount]
+
+48 bit
+
+Art-Net 4 Protocol Release V1.4
+
+Mnemonic
+
+Function
+
+TodFull
+
+The packet contains the entire
+TOD or is the first packet in a
+sequence of packets that
+contains the entire TOD.
+0xff
+TodNak
+The TOD is not available or
+discovery is incomplete.
+The low 8 bits of the Port-Address of the Output
+Gateway DMX Port that generated this packet. The
+high nibble is the Sub-Net switch. The low nibble
+corresponds to the Universe.
+The total number of RDM devices discovered by this
+Universe.
+The index number of this packet. When UidTotal
+exceeds 200, multiple ArtTodData packets are used.
+BlockCount is set to zero for the first packet and
+incremented for each subsequent packet containing
+blocks of TOD information.
+The number of UIDs encoded in this packet. This is
+the index of the following array.
+An array of RDM UID.
+
+Document Revision 1.4dp 23/10/2025
+
+- 89 -
+
+ArtTodControl:
+Packet strategy.
+Entity
+Controller
+
+Node
+Output
+Gateway
+Node Input
+Gateway
+
+Media
+Server
+
+Direction
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+
+Action
+No Action.
+Allowed.
+Allowed.
+Reply with ArtTodData.
+Not Allowed.
+Not Allowed.
+No Action.
+Not Allowed.
+Input Gateway Directed Broadcasts to all nodes.
+No Action.
+Not Allowed.
+Not Allowed.
+
+The ArtTodControl packet is used to send RDM control parameters over Art-Net. The
+response is ArtTodData.
+ArtTodControl packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+2
+
+OpCode
+
+Int16
+
+3
+4
+
+ProtVerHi
+ProtVerLo
+
+Int8
+Int8
+
+5
+6
+
+Filler1
+Filler2
+
+Int8
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a null
+termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpTodControl.
+Transmitted low byte first.
+High byte of the Art-Net protocol revision number.
+Low byte of the Art-Net protocol revision number.
+Current value 14
+Pad length to match ArtPoll.
+Pad length to match ArtPoll.
+Document Revision 1.4dp 23/10/2025
+
+- 90 -
+
+Field
+7
+8
+9
+10
+11
+12
+13
+14
+
+Name
+Spare1
+Spare2
+Spare3
+Spare4
+Spare5
+Spare6
+Spare7
+Net
+
+Size
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+
+15
+
+Command
+
+Int8
+
+16
+
+Address
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+The top 7 bits of the Port-Address of the Output
+Gateway DMX Port that should action this command.
+Defines the packet action.
+Value
+Mnemonic
+Function
+0x00
+AtcNone
+No action.
+0x01
+AtcFlush
+The port flushes its TOD
+and instigates full
+discovery.
+0x02
+AtcEnd
+The port ends current
+discovery but does not
+flush ToD.
+0x03
+AtcIncOn
+The port enables
+incremental discovery.
+0x04
+AtcIncOff
+The port disables
+incremental discovery.
+The low byte of the 15 bit Port-Address of the DMX
+Port that should action this command.
+
+Document Revision 1.4dp 23/10/2025
+
+- 91 -
+
+ArtRdm:
+Packet strategy.
+Entity
+Controller
+
+Node
+Output
+Gateway
+Node Input
+Gateway
+
+Media
+Server
+
+Direction
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+Receive
+Unicast
+Transmit
+Broadcast
+
+Action
+No Action.
+Yes.
+Not allowed.
+No Action
+Yes.
+Not allowed.
+No Action.
+Yes.
+Not allowed.
+No Action.
+Yes.
+Not allowed.
+
+The ArtRdm packet is used to transport all non-discovery RDM messages over Art-Net.
+ArtRdm packet definition
+Field
+1
+
+Name
+ID[8]
+
+Size
+Int8
+
+2
+
+OpCode
+
+Int16
+
+3
+4
+
+ProtVerHi
+ProtVerLo
+
+Int8
+Int8
+
+5
+
+RdmVer
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a null
+termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpRdm.
+Transmitted low byte first.
+High byte of the Art-Net protocol revision number.
+Low byte of the Art-Net protocol revision number.
+Current value 14
+Art-Net Devices that only support RDM DRAFT V1.0 set
+field to 0x00. Devices that support RDM STANDARD
+V1.0 set field to 0x01.
+Document Revision 1.4dp 23/10/2025
+
+- 92 -
+
+Field
+6
+7
+8
+9
+10
+11
+12
+
+Name
+Filler2
+Spare1
+Spare2
+Spare3
+Spare4
+Spare5
+FifoAvail
+
+Size
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+Int8
+
+13
+
+FifoMax
+
+Int8
+
+14
+
+Net
+
+Int8
+
+15
+
+Command
+
+Int8
+
+16
+
+Address
+
+Int8
+
+17
+
+RdmPacket
+
+Int8
+[Vari]
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Pad length to match ArtPoll.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+The number of free entries available in the gateway’s
+RDM transmit queue. Set to zero if queue is not
+implemented.
+The maximum number of entries available in the
+gateway’s RDM transmit queue. Set to zero if queue is
+not implemented.
+The top 7 bits of 15 bit Port-Address that should action
+this command.
+Defines the packet action.
+Value
+Mnemonic
+Function
+0x00
+ArProcess
+Process RDM Packet.
+The low 8 bits of the Port-Address that should action
+this command.
+The RDM data packet excluding the DMX StartCode.
+
+Document Revision 1.4dp 23/10/2025
+
+- 93 -
+
+ArtRdmSub:
+Packet strategy.
+Entity
+Controller
+
+Node
+Output
+Gateway
+Node Input
+Gateway
+Media
+Server
+
+Direction
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+Receive
+Unicast Transmit
+Broadcast
+
+Action
+No Action.
+Yes.
+Not allowed.
+No Action
+Yes.
+Not allowed.
+No Action.
+Yes.
+Not allowed.
+No Action.
+Not Allowed.
+Not Allowed.
+
+The ArtRdmSub packet is used to transfer Get, Set, GetResponse and SetResponse data
+to and from multiple sub-devices within an RDM device. This packet is primarily used by
+Art-Net devices that proxy or emulate RDM. It offers very significant bandwidth gains
+over the approach of sending multiple ArtRdm packets.
+Please note that this packet was added at the release of Art-Net II. For backwards
+compatibility it is only acceptable to implement this packet in addition to ArtRdm. It
+must not be used instead of ArtRdm.
+ArtRdmSub packet definition
+ArtRdmSub
+Field Name
+1
+ID[8]
+
+Size
+Int8
+
+2
+
+OpCode
+
+Int16
+
+3
+
+ProtVerHi
+
+Int8
+
+Art-Net 4 Protocol Release V1.4
+
+Description
+Array of 8 characters, the final character is a null
+termination.
+Value = ‘A’ ‘r’ ‘t’ ‘-‘ ‘N’ ‘e’ ‘t’ 0x00
+OpRdmSub.
+Transmitted low byte first.
+High byte of the Art-Net protocol revision
+Document Revision 1.4dp 23/10/2025
+
+- 94 -
+
+ArtRdmSub
+4
+
+ProtVerLo
+
+Int8
+
+5
+
+RdmVer
+
+Int8
+
+6
+7
+8
+9
+
+Filler2
+UID
+Spare1
+CommandClass
+
+Int8
+Int8[6]
+Int8
+Int8
+
+10
+
+ParameterId
+
+Int16
+
+11
+
+SubDevice
+
+Int16
+
+12
+
+SubCount
+
+Int16
+
+13
+14
+15
+16
+17
+
+Spare2
+Spare3
+Spare4
+Spare5
+Data
+
+Int8
+Int8
+Int8
+Int8
+Int16
+[Vari]
+
+Art-Net 4 Protocol Release V1.4
+
+number.
+Low byte of the Art-Net protocol revision
+number. Current value 14
+Art-Net Devices that only support RDM DRAFT
+V1.0 set field to 0x00. Devices that support RDM
+STANDARD V1.0 set field to 0x01.
+Transmit as zero, receivers don’t test.
+UID of target RDM device.
+Transmit as zero, receivers don’t test.
+As per RDM specification. This field defines
+whether this is a Get, Set, GetResponse,
+SetResponse.
+As per RDM specification. This field defines the
+type of parameter contained in this packet. Bigendian.
+Defines the first device information contained in
+packet. This follows the RDM convention that 0 =
+root device and 1 = first subdevice. Big-endian.
+The number of sub devices packed into packet.
+Zero is illegal. Big-endian.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Transmit as zero, receivers don’t test.
+Packed 16-bit big-endian data. The size of the
+data array is defined by the contents of
+CommandClass and SubCount:
+CommandClass
+Array Size
+Get
+0
+Set
+SubCount
+GetResponse
+SubCount
+SetResponse
+0
+
+Document Revision 1.4dp 23/10/2025
+
+- 95 -
+
+Display of status:
+Most Art-Net compliant equipment will provide some level of status indication. The
+following format is suggested:
+Name
+Power
+Communication
+
+Mnemonic
+Pow
+Com
+
+DMX512
+
+DMX x
+
+Function
+Normally on, flashes if fault detected.
+On if any Art-Net packets detected on
+network, timeout after 6 seconds.
+DMX
+On if good DMX received,
+Input
+Flashing if errors detected.
+Alternative Start Codes are not
+errors!
+DMX
+On if receiving ArtDmx for this
+Output output. Timeout after 6 seconds.
+
+Data Integrity:
+Art-Net receivers should check one item:
+Compare the ID[8] field
+
+Art-Net 4 Protocol Release V1.4
+
+Document Revision 1.4dp 23/10/2025
+
+- 96 -
+
+© Artistic Licence. 1998-2024
+E: Support@ArtisticLicence.com
+W: http://www.ArtisticLicence.com
+W: www.Art-Net.info
+
+Please note that the DMX-Workshop suite including the Art-Net SDK are copyright Singularity (UK) Ltd and
+must not be included in commercial products or made available for download Internet without the express
+written permission Singularity (UK) Ltd. Download DMX-Workshop from: www.singularity-uk.com/
+The information contained in this document is subject to change without notice. Artistic Licence. makes no
+warranty of any kind with regard to this material, including, but not limited to, the implied warranties of fitness
+for a particular purpose.
+Artistic Licence shall not be liable for errors contained herein or for incidental or consequential damages in
+connection with the furnishing, performance or use of this material.
+All trademarks are acknowledged.
+
+

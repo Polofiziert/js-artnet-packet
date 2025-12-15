@@ -10,13 +10,13 @@ export type OpCodeDefinition = {
 export type ReportCodeDefinition = {
   name: string;
   code: number;
-  description: string;
+  definition: string;
 };
 
 export type StyleCodeDefinition = {
   name: string;
   code: number;
-  description: string;
+  definition: string;
 };
 
 export type OemCodeEntry = {

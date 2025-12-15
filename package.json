@@ -1,0 +1,26 @@
+{
+  "name": "js-artnet-packet",
+  "version": "0.0.1",
+  "description": "Jet another ArtNet Packet",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Polofiziert/js-artnet-packet.git"
+  },
+  "keywords": [
+    "Artnet",
+    "ArtNet",
+    "DMX",
+    "Light",
+    "Event"
+  ],
+  "author": "polofiziert",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Polofiziert/js-artnet-packet/issues"
+  },
+  "homepage": "https://github.com/Polofiziert/js-artnet-packet#readme"
+}

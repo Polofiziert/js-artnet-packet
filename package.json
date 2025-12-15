@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/Polofiziert/js-artnet-packet/issues"
   },
-  "homepage": "https://github.com/Polofiziert/js-artnet-packet#readme"
+  "homepage": "https://github.com/Polofiziert/js-artnet-packet#readme",
+  "devDependencies": {
+    "@types/node": "^25.0.2"
+  }
 }

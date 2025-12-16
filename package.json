@@ -4,7 +4,7 @@
   "description": "Jet another ArtNet Packet",
   "main": "index.js",
   "scripts": {
-    "test": "test.js"
+    "test": "./lib/tests/test-packets.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Polofiziert/js-artnet-packet#readme",
   "devDependencies": {
-    "@types/node": "^25.0.2"
+    "@types/node": "^25.0.2",
+    "concurrently": "^9.2.1"
   }
 }

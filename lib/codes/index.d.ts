@@ -1,6 +1,8 @@
 // Type definitions for js-artnet-packet `lib/codes`
 // Generated JSDoc -> TypeScript declarations to help TypeScript consumers and editors
 
+// import { PriorityCodeEntry } from ".";
+
 export type OpCodeDefinition = {
   name: string;
   code: number;
@@ -14,6 +16,12 @@ export type ReportCodeDefinition = {
 };
 
 export type StyleCodeDefinition = {
+  name: string;
+  code: number;
+  definition: string;
+};
+
+export type PriorityCodeDefinition = {
   name: string;
   code: number;
   definition: string;
@@ -40,10 +48,12 @@ export const AT_OPCODES: OpCodeDefinition[];
 export const AT_REPORT_CODES: ReportCodeDefinition[];
 export const AT_STYLE_CODES: StyleCodeDefinition[];
 export const AT_OEM_CODES: OemCodeEntry[];
+export const AT_PRIORITY_CODES: PriorityCodeEntry[];
 
 export default {
   AT_OPCODES,
   AT_REPORT_CODES,
   AT_STYLE_CODES,
   AT_OEM_CODES,
+  AT_PRIORITY_CODES,
 };

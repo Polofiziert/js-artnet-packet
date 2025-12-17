@@ -9,7 +9,7 @@ const id = buf.write(ArtNetConstants.AT_ID)
 const opCode = buf.writeUInt16LE(AT_OPCODES[0].code, id)
 //const protVerHi = buf.writeUInt8(ArtNetConstants.AT_PROT_VER_HI, opCode)
 //const protVerLo = buf.writeUInt8(ArtNetConstants.AT_PROT_VER_LO, protVerHi)
-
+/*
 var offset = 3
 
 if(buffer.toString('utf8', offset, offset+8) == "Art-Net\0"){
@@ -68,7 +68,118 @@ bufiii.write(text)
 console.log(bufiii)
 
 console.log("-------------------------")
+console.log("-------------------------")
 
 process.stdout.write("test" + "\n")
 process.stdout.write("test" + "\n")
 process.stdout.write(bufiii)
+
+console.log("-------------------------")
+var ipAddr = "192.168.1.1"
+
+var ipNum = ipAddr.split('.').map((num)=>parseInt(num, 10))
+console.log(ipNum)
+console.log(ipAddr)
+
+console.log("-------------------------")
+
+function ValidateIPaddress(ipaddress) {  
+    if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
+        return (true)  
+    }  
+    alert("You have entered an invalid IP address!")  
+    return (false)  
+}  
+
+const ipRegEx = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+
+console.log(ipRegEx.test("192.1.1.1"))
+
+
+console.log("-------------------------")
+
+["1", "2", "3"].map((str) => parseInt(str, 10)); // [1, 2, 3]
+
+*/
+
+var bufferT = Buffer.alloc(24)
+console.log(bufferT)
+
+console.log("-------------------------")
+
+
+var self1 = {
+    name : "ipAddr",
+    size : "UInt8",
+    sizeCount : 4,
+    data : {
+        ipAddr : [192, 168, 1, 102]
+    }
+}
+self2 = {
+    name : "versInf",
+    size : "UInt8",
+    sizeCount : 4,
+    data : {
+        versInfo : [192, 123]
+    },
+}
+self3 = {
+    name : "one",
+    size : "UInt8",
+    sizeCount : 4,
+    data : {
+        status : {
+            indicator: {
+                unknown : "00000"
+            }
+        }
+    },
+}
+
+function writeToBuffer(buf, offset, self){
+    if(self.size == "UInt8"){
+        offset = buf.writeUInt8(val, offset)
+    }
+    if(self.size == "UInt16LE"){
+        offset = buf.writeUInt16LE(val, offset)
+    }
+    if(self.size == "UInt32LE"){
+        offset = buf.writeUInt32LE(val, offset)
+    }
+    return offset
+}
+
+
+function toBuffer_old(buf, offset, self){
+    self.data.forEach(element => {
+        if(element.isArray){
+            element.map(function(val){
+                offset = writeToBuffer(buf, offset, self)
+            });
+        }
+    });
+    return offset
+}
+
+function toBuffer(buf, offset, self){
+    for (const [key, value] of Object.entries(self.data)) {
+        if(Array.isArray(value)){
+            value.map(function(val){
+                console.log(val)
+                offset = writeToBuffer(buf, offset, val)
+            });
+        }
+    }
+    return offset
+}
+
+toBuffer(bufferT, 0, self1)
+
+console.log("-------------------------")
+
+console.log(bufferT)
+
+
+
+

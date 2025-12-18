@@ -28,6 +28,6 @@
     "concurrently": "^9.2.1"
   },
   "dependencies": {
-    "schemapack": "^1.4.2"
+    "restructure": "^3.0.2"
   }
 }

@@ -10,6 +10,9 @@
  * @property {string} definition - Human-readable definition of what the code means
  *
  * @type {ReportCodeDefinition[]}
+ * 
+ * @typedef {function} getCodeName
+ * 
  *
  * @example
  * // Find a specific report code

@@ -19,7 +19,7 @@ const { PollPacket } = require("./src/packets/pollPacket")
     const ipBroadcastAddres = "127.0.0.255"
     
     client.bind({
-        address: 'localhost',
+        address: ipAddres,
         port: 6454,
     }, () => {
         console.log('Bound successfully');
@@ -28,7 +28,6 @@ const { PollPacket } = require("./src/packets/pollPacket")
         console.log('Bount to: ' + client.address().port);
         console.log('Emitters: ' + client.eventNames());
         console.log('Remote: ' + client.remoteAddress());
-        console.log('Remote: ' + client.);
     });
 
     let i = 0;

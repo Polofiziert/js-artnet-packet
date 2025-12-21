@@ -11,7 +11,8 @@ class ArtNetPackets {
     }
 
     decode (buffer) {
-        return this.schema.fromBuffer(buffer)
+        this.data = this.schema.fromBuffer(buffer)
+        return this.data
     }
 
     _conterUp(rollOver, value){

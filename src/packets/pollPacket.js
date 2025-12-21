@@ -7,7 +7,7 @@ const {MappedBitfield, FixedString, MappedEnum} = require('./schemas/fieldTypeEx
 let pollData = {
     id: "Art-Net\0",
     opCode: 0x2000,
-    protoVer: [0,4],
+    protoVer: [4,48],
     // Packet Begins
     flags: {
         targetedMode: "off", 
@@ -30,7 +30,7 @@ class PollPacket extends ArtNetPackets{
     }
 
     encode (){
-        console.log("encoding")
+        //console.log("encoding")
         // this._increntCounters(); -> Has no Counters
         return this.schema.toBuffer(this.data)
     }

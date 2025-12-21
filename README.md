@@ -17,3 +17,9 @@ jap! Jet another artnet Packet.
 - toHexStringPretty
 
 - ArtNetPackets
+
+
+# Contributions
+- restructure
+  + for packet to buffer parsing
+  + 

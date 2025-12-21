@@ -15,12 +15,13 @@ const { PollPacket } = require("./src/packets/pollPacket")
     const client = dgram.createSocket('udp4');
     const packet = new PollPacket
     const packetReply = new PollReplyPacket
-    const ipAddres = "127.0.0.102"
-    const ipBroadcastAddres = "127.0.0.255"
+    const ipAddres = "192.168.1.114"
+    const ipBroadcastAddres = "192.168.2.255"
     
     client.bind({
         address: ipAddres,
         port: 6454,
+        exclusive: true,
     }, () => {
         console.log('Bound successfully');
         console.log('Bount to: ' + client.address().address);
@@ -33,7 +34,7 @@ const { PollPacket } = require("./src/packets/pollPacket")
     let i = 0;
     let sendInteral = setInterval(() => {
         let buffer = packet.encode()
-        client.send(buffer, 6454, ipAddres, (err) => {
+        client.send(buffer, 6454, ipBroadcastAddres, (err) => {
             if (err) client.close();
             console.log('--- Message sent ---');
         });
@@ -43,6 +44,7 @@ const { PollPacket } = require("./src/packets/pollPacket")
         i > 10000 ? client.close() : null
     }, 1000);
 
+    /*
     client.on('message', (msg, rinfo) => {
         console.log('Received info:', rinfo);
         console.log('Received reply:', msg);
@@ -61,6 +63,7 @@ const { PollPacket } = require("./src/packets/pollPacket")
         
         
     });
+    */
 
     console.log("----------------")
 

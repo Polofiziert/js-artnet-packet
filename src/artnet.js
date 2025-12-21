@@ -19,18 +19,18 @@ class ArtNetInstance {
         this.devProperties = {
             shortName: "js-artnet-package",
             longName: "js-artnet-package jep!",
-            estaMan: [0,1],
-            oem: [0,1],
-            protoVersInfo: [4, 48],     // Version of the used Art-Net Protocol Revision
-            versionInfo: [0, 1],        // Version of the Device Firmware
+            estaMan: "0.1",
+            oem: "0.1",
+            artnetVersInfo: "4.48",     // Version of the used Art-Net Protocol Revision
+            devVersionInfo: "0.1",        // Version of the Device Firmware
             ubeaVersion: 0,             // Version of User edited Bios
-            numPorts: 0x0001,           // number of output ports, if you have a hardware device
+            portSum: 1,           // number of output ports, if you have a hardware device
             style: "stController",      // type of your device
         }
     }
 
     init(){
-        
+
 
     }
 

@@ -1,11 +1,12 @@
 const { AT_OPCODES } = require('./opcodes');
 const {AT_REPORT_CODES} = require('./reportcodes');
-const styleCodes = require('./stylecodes');
-const oemCodes = require('./oemcodes');
-const priorityCodes = require('./prioritycodes');
+const {AT_STYLE_CODES} = require('./stylecodes');
+const {AT_OEM_CODES} = require('./oemcodes');
+const {AT_PRIORITY_CODES} = require('./prioritycodes');
 
 
 const ArtNetCodes = {
+    // Report Codes
     getReportCode(name){
         let code
         AT_REPORT_CODES.forEach(element => {
@@ -35,6 +36,7 @@ const ArtNetCodes = {
         return definition
     },
 
+    //OpCodes
     getOpCode(name){
         let code
         AT_OPCODES.forEach(element => {
@@ -62,7 +64,85 @@ const ArtNetCodes = {
             element.code == code ? definition = element.definition : null
         });
         return definition
-    }
+    },
+
+
+    //OpCodes
+    getOemCode(manufacturer){
+        let code
+        AT_OEM_CODES.forEach(element => {
+            element.Manufacturer == manufacturer ? code = element.OemCode : null
+        });
+        return code
+    },
+    getOemCodeByCode(code){
+        let codeObj
+        AT_OPCODES.forEach(element => {
+            element.OemCode == code ? codeObj = element : null
+        });
+        return codeObj
+    },
+
+
+    //Priority Codes
+    getPrioCode(name){
+        let code
+        AT_PRIORITY_CODES.forEach(element => {
+            element.name == name ? code = element.code : null
+        });
+        return code
+    },
+    getPrioCodeByCode(code){
+        let name
+        AT_PRIORITY_CODES.forEach(element => {
+            element.code == code ? name = element.name : null
+        });
+        return name
+    },
+    getPrioCodeDefinition(name){
+        let definition
+        AT_PRIORITY_CODES.forEach(element => {
+            element.name == name ? definition = element.definition : null
+        });
+        return definition
+    },
+    getPrioCodeDefinitionByCode(code){
+        let definition
+        AT_PRIORITY_CODES.forEach(element => {
+            element.code == code ? definition = element.definition : null
+        });
+        return definition
+    },
+
+    // Style Codes
+    getStyleCode(name){
+        let code
+        AT_STYLE_CODES.forEach(element => {
+            element.name == name ? code = element.code : null
+        });
+        return code
+    },
+    getStyleCodeByCode(code){
+        let name
+        AT_STYLE_CODES.forEach(element => {
+            element.code == code ? name = element.name : null
+        });
+        return name
+    },
+    getStyleCodeDefinition(name){
+        let definition
+        AT_STYLE_CODES.forEach(element => {
+            element.name == name ? definition = element.definition : null
+        });
+        return definition
+    },
+    getStyleCodeDefinitionByCode(code){
+        let definition
+        AT_STYLE_CODES.forEach(element => {
+            element.code == code ? definition = element.definition : null
+        });
+        return definition
+    },
 }
 
 

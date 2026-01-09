@@ -8,6 +8,26 @@ function toBinString(arr) {
     }
 }
 
+function toHexString(arr) {
+    if(arr){
+        return Array.from(arr)
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join(' ') 
+    }else{
+        return
+    }
+}
+
+function toHexStringArray(arr) {
+    if(arr){
+        return Array.from(arr)
+        .map(byte => byte.toString(16).padStart(2, '0').padStart(4, '0x'))
+        .join(', ') 
+    }else{
+        return
+    }
+}
+
 function toBinStringPretty(arr, line) {
     let regEx = new RegExp("(.{" + line + "})", "g")
     if(arr){
@@ -24,7 +44,7 @@ function toHexStringPretty(arr, line) {
     let regEx = new RegExp("([0-9,a-f]{" + line + "})", "g")
     if(arr){
         return Array.from(arr)
-        .map(byte => byte.toString(16).padStart(1, '0'))
+        .map(byte => byte.toString(16).padStart(2, '0'))
         .join(' ')
         .replace(/ /g,"")
         .replace(regEx,"$1\n")
@@ -39,6 +59,8 @@ function toHexStringPretty(arr, line) {
 
 module.exports = {
     toBinString,
+    toHexString,
     toBinStringPretty,
-    toHexStringPretty
+    toHexStringPretty,
+    toHexStringArray,
 }

@@ -5,7 +5,7 @@ const {MappedBitfield, FixedString, MappedEnum} = require('./schemas/fieldTypeEx
 
 
 let pollReplyData = {
-        id: "Art-Net\0",
+        id: "Art-Net",
         opCode: 8448,
         ipAddress: [192, 168, 2, 114],
         port: 6454,
@@ -15,8 +15,8 @@ let pollReplyData = {
         oem: [0, 0],
         ubeaVersion: 0,
         status1: {
-            indicator: "unkown",
-            auth: "unkown",
+            indicator: "unknown",
+            auth: "unknown",
             bootMode: "normal",
             isRdm: "no",
             hasUbea: "no",
@@ -24,7 +24,7 @@ let pollReplyData = {
         estaMan: [0, 0],
         portName: "js-artnet-package",
         longName: "js-artnet-package jep!",
-        nodeReport: "#0001 [0002] zzzzz...This node Feels very gooood!!!",
+        nodeReport: "#0001 [0001] zzzzz...This node Feels very gooood!!!",
         numPorts: 0x0001,
         portTypes1: {
             canOutput: "yes",
@@ -201,20 +201,7 @@ let pollReplyData = {
         defaultRespUid: [0, 0, 0, 0, 0, 0],
         userData: [0, 0],
         refreshRate: 0x002c,
-        bckQueuePolicy: MappedEnum({
-            statusNone: 0x00,
-            statusAdvisory: 0x01,
-            statusWarning: 0x02,
-            statusError: 0x03,
-            disabled: 0x04,
-            manufacturer1: 0x05,
-            manufacturer2: 0x06,
-            manufacturer3: 0x07,
-            manufacturer4: 0x08,
-            manufacturer5: 0x09,
-            manufacturer6: 0x0a,
-            manufacturer7: 0x0b,
-        }),
+        bckQueuePolicy: "statusNone",
 }
 
 class PollReplyPacket extends ArtNetPackets{
@@ -224,7 +211,7 @@ class PollReplyPacket extends ArtNetPackets{
             rollOver: 9999,
             value: 0
         },
-        this.data = pollReplyData
+        this.data = structuredClone(pollReplyData)
         this.nodeReportCode = "RcPowerOk"
     }
 

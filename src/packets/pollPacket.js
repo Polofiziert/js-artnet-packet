@@ -5,7 +5,7 @@ const {MappedBitfield, FixedString, MappedEnum} = require('./schemas/fieldTypeEx
 
 
 let pollData = {
-    id: "Art-Net\0",
+    id: "Art-Net",
     opCode: 0x2000,
     protoVer: [4,48],
     // Packet Begins
@@ -14,7 +14,7 @@ let pollData = {
         vlcTransmission: "on", 
         broadcastDignostics: "yes", 
         sendDiagnostics: "yes", 
-        sendOnChange: "on" 
+        sendOnChange: "no" 
     },
     diagPriority: "dpVolatile",
     // Min packet lenght for valid artPollReply Packet, following fields are Art-Net4 Specific
@@ -26,7 +26,7 @@ let pollData = {
 class PollPacket extends ArtNetPackets{
     constructor(){
         super(pollSchema, 14),
-        this.data = pollData
+        this.data = structuredClone(pollData)
     }
 
     encode (){

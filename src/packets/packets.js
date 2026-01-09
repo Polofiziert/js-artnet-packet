@@ -15,6 +15,10 @@ class ArtNetPackets {
         return this.data
     }
 
+    isValid(buffer){
+        return this.minSize <= buffer.lenght ? true : false
+    }
+
     _conterUp(rollOver, value){
         value < rollOver ? value = value + 1 : value = 0
         return value

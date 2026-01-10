@@ -230,7 +230,7 @@ class PollReplyPacket extends ArtNetPackets{
     _updateNodeReport(){
         //console.log("reportCounter : " + this.counters.nodeReport.value)
 
-        let reportCode = ArtNetCodes.getReportCode(this.nodeReportCode).toString().padStart(4, "0")
+        let reportCode = (ArtNetCodes.getReportCode(this.nodeReportCode) ?? 0).toString().padStart(4, "0")
         let reportCounter = this.counters.nodeReport.value.toString().padStart(4, "0")
 
         this.data.nodeReport = this.data.nodeReport.replace(/\[....\]/, `[${reportCounter}]`)

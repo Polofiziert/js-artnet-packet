@@ -98,7 +98,7 @@ artnetDiscover.listen()
 When artnetDiscover gets a reply, it calls the artnetNodeManager and this saves the node.
 
 ## DMX loopp | Keep Shouting
-
+Send to your Friend, one at a time.
 ```js
 
 const { jap } = require("./src/jap)

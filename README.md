@@ -113,6 +113,9 @@ let artnetProtocol = japArtnet.createArtNetProtocol({
 })
 
 let artnetDmxLoop = japArtnet.artnetDmxLoop({ address, {net: 0, subNet: 0},  { universe: 0, data: [dmxdata]} }, { universe: 1, data: [dmxdata]} } )
+
+artnetDmxLoop.start()
+
 artnetDmxLoop.update({ universe: 0, data: [dmxdata]} })
 artnetDmxLoop.update({ universe: 1, data: [dmxdata]} })
 artnetDmxLoop.update({ universe: 0, data: [dmxdata]} })

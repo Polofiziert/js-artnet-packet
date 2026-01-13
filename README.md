@@ -2,10 +2,15 @@
 jap! Jet another artnet Packet.
 
 This Package is Still in  0.0.1 Development!
+
 Be welcome to help me with that.
+
 Dont be Angry if nothing here works.
+
 Dont use in projects.
+
 Be kind.
+
 Pls send feedback.
 
 Look at Wiki to see whats coming...

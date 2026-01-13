@@ -1,9 +1,6 @@
 # js-artnet-packet
 jap! Jet another artnet Packet.
 
-# js-artnet-packet
-jap! Jet another artnet Packet.
-
 # Quick start: 
 ## Send and receive | Output, Input
 Simply send and receive Dmx over Ethernet. Input or Output DMX.

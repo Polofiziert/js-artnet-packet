@@ -16,35 +16,36 @@ const { jap } = require("./src/jap")
 const util = require('util');
 const log = util.debuglog('sandbox');
 
-const socket = dgram.createSocket('udp4')
-socket.on('listening', ()=>{
-    log('Socket Now Bound and listening ...')
-});
-socket.on('message', (msg)=>{
-    log(msg)
-});
-socket.on('close', ()=>{
-    log('... Socket closed')
-});
-socket.on('error', err => { 
-    log(err); 
-});
+// const socket = dgram.createSocket('udp4')
+// socket.on('listening', ()=>{
+//     log('Socket Now Bound and listening ...')
+// });
+// socket.on('message', (msg)=>{
+//     log(msg)
+// });
+// socket.on('close', ()=>{
+//     log('... Socket closed')
+// });
+// socket.on('error', err => { 
+//     log(err); 
+// });
+// socket.bind({
+//     address: 'localhost',
+//     port: 6454,
+// }); 
 
-socket.bind({
-    address: 'localhost',
-    port: 6454,
-}); 
 
 // -----------------------------------
 
 let justArtnet = new jap
 
+// let artnetProtocol = justArtnet.createArtNetProtocol({socket})
 let artnetProtocol = justArtnet.createArtNetProtocol({
-    socket: socket,
-    bind: true,
-    host: "2.0.0.102",
+    host: "192.168.2.123", 
     port: 6454,
 })
+
+log(artnetProtocol)
 
 artnetProtocol.on('listening', ()=>{
     log('Now Bound and listening ...')
@@ -71,7 +72,7 @@ artnetProtocol.on('send', (artpollPacket) => {
     log('Have Sent a packet')
 });
 
-// artnetProtocol.bind()
+artnetProtocol.bind();
 
-artnetProtocol.send('artDmx', {})
-artnetProtocol.close()
+// artnetProtocol.send('artDmx', {})
+// artnetProtocol.close()

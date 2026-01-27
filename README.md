@@ -16,6 +16,10 @@ Pls send feedback.
 Look at Wiki to see whats coming...
 
 # Quick start: 
+jap mainly is going to be just an interface for the artnet protocol. With an event based architecture.
+
+However there will be helpers for common things like Discovery (artPoll/art reply), Universe management, Node management and more.
+
 ## Send and receive | Output, Input
 Simply send and receive Dmx over Ethernet. Input or Output DMX.
 

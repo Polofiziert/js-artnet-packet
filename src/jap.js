@@ -1,10 +1,11 @@
 const {Buffer} = require('node:buffer')
 const dgram = require('node:dgram')
 
-const {toBinString, toBinStringPretty, toHexStringPretty, toHexString, toHexStringArray} = require('../helper');
+const {toBinString, toBinStringPretty, toHexStringPretty, toHexString, toHexStringArray, checkIp} = require('../helper');
 const {MappedBitfield, FixedString, MappedEnum} = require('./packets/schemas/fieldTypeExtention')
 const {ArtNetCodes} = require("./codes")
 const {tranceiver} = require("./network/tranceiver")
+const { ArtNetConfigurationError } = require('./errors/config.error')
 
 const util = require('util');
 const log = util.debuglog('jap');
@@ -26,18 +27,37 @@ class jap {
     createArtNetProtocol (options) {
         log("creating Protocol transreceiver")
 
-        if(options.socket){
-            let socketInfo = options.socket.address()
+        if (!options) {
+            throw new ArtNetConfigurationError(1001, "createArtNetProtocol",
+                "Options not set. expected: {socket} or {host, port}");
+        }
 
-            options.socket = options.socket
-            options.host = socketInfo.address
-            options.port = socketInfo.port
-            
+        if (options.socket) {
+            // socket provided — fine
+        } else {
+            if (!options.host || options.port == null) {
+                throw new ArtNetConfigurationError(1002, "createArtNetProtocol",
+                    "Options not set correct! expected: {host, port}");
+            }
+            if (!checkIp(options.host)) {
+                throw new ArtNetConfigurationError(1003, "createArtNetProtocol",
+                    "IpAddress not set correct! expected: {host:x.x.x.x}");
+            }
+            if (!Number.isInteger(options.port) || options.port < 0 || options.port > 65535) {
+                throw new ArtNetConfigurationError(1004, "createArtNetProtocol",
+                    "Port not set correct! expected: 0-65535");
+            }
+        }
+
+
+        if(options.socket){
             let transreiver = new tranceiver(options)
+            options.ownsSocket = false
             return transreiver
         }else{
             let socket = dgram.createSocket('udp4')
             options.socket = socket
+            options.ownsSocket = true
             let transreiver = new tranceiver(options)
             return transreiver
         }

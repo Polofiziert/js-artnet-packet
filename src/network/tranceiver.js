@@ -30,33 +30,93 @@ Events:
 class tranceiver extends EventEmitter{
     constructor(options){
         super()
-        this.socket = options.socket
-        this.host = options.host
-        this.port = options.port
+        options.socket ? this.socket = options.socket : null
+        options.host ? this.host = options.host : null
+        options.port ? this.port = options.port : null
+        this.ownsSocket = options.ownsSocket
+
+        this.receiving = false 
     }
-    
-    // connect(){ // set a default remote address/port for outgoing packets and restrict incoming packets to only those from that remote.
-    //     this.emit('connect')
-    // }
 
     close(){
         log("close called")
+        
+        if(this.ownsSocket){
+            this.socket.removeAllListeners('message')
+            this.socket.removeAllListeners('error')
+            this.socket.removeAllListeners('close')
+            this.socket.close()
+            this.receiving = false
+        }else{
+            this.socket.removeListener('message', this._msgHandler())
+            this.socket.removeListener('error', this._errorHandler())
+            this.socket.removeListener('close', this._closeHandler())
+            this.receiving = false
+        }
         this.emit('close')
+        log("closed")
     }
     
 
     bind(){ // socket starts receiving packets sent to that local port/address (including any remote sender). 
         // take socket and make connectionand start receivinf messages
-        log('bound')
-        this.emit('listening')
-    }
+        log('bind called')
+
+        if(this.ownsSocket){
+            log('bind owns Socket')
+            // this.socket.on('message', this._msgHandler())
+            this.socket.on('error', this._errorHandler())
+            this.socket.on('close', this._closeHandler())
+            this.socket.bind({
+                address: this.host,
+                port: this.port,
+            }, ()=>{
+                this.emit('listening')
+                this.receiving = true
+            })
+        }else{
+            log('bind doesn`t owns Socket')
+            try{
+                let sockInfo = this.socket.address()
+
+                this.host = sockInfo.address
+                this.port = sockInfo.port
+
+                this.socket.on('message', this._msgHandler())
+                this.socket.on('error', this._errorHandler())
+                this.socket.on('close', this._closeHandler())
+                this.receiving = true
+            }catch(e){
+                this.emit('error', e)
+            }
+        }
+        log('Bind func ended')
+    }   
 
     send(type, obj){
         log("send called")
-        this.emit('send')
-        this.emit('artPoll', {packet: "artPoll"})
-        this.emit('artPollReply', {packet: "artPollReply"})
-        this.emit('error', {test: "a test Obj"})
+
+        if(this.receiving){
+            //this.socket.send(msg)
+        }else{
+            log(`not Receiving`)
+            this.emit('error')
+        }
+
+        // this.emit('send')
+        // this.emit('artPoll', {packet: "artPoll"})
+        // this.emit('artPollReply', {packet: "artPollReply"})
+        // this.emit('error', {test: "a test Obj"})
+    }
+
+    _msgHandler(msg, rinfo){
+        log(`Message received: ${msg} \n From: ${rinfo}`)
+    }
+    _errorHandler(err){
+        log(`Error emitted: ${err}`)
+    }
+    _closeHandler(){
+        log(`Closed emitted`)
     }
 }
 

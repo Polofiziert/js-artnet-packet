@@ -16,63 +16,69 @@ const { jap } = require("./src/jap")
 const util = require('util');
 const log = util.debuglog('sandbox');
 
-// const socket = dgram.createSocket('udp4')
-// socket.on('listening', ()=>{
-//     log('Socket Now Bound and listening ...')
-// });
-// socket.on('message', (msg)=>{
-//     log(msg)
-// });
-// socket.on('close', ()=>{
-//     log('... Socket closed')
-// });
-// socket.on('error', err => { 
-//     log(err); 
-// });
-// socket.bind({
-//     address: 'localhost',
-//     port: 6454,
-// }); 
+const socket = dgram.createSocket('udp4')
+socket.on('listening', ()=>{
+    log('Socket Now Bound and listening ...')
+});
+socket.on('message', (msg)=>{
+    log(msg)
+});
+socket.on('close', ()=>{
+    log('... Socket closed')
+});
+socket.on('error', err => { 
+    log(err); 
+});
+socket.bind({
+    address: 'localhost',
+    port: 6454,
+}); 
 
 
 // -----------------------------------
 
 let justArtnet = new jap
 
-// let artnetProtocol = justArtnet.createArtNetProtocol({socket})
-let artnetProtocol = justArtnet.createArtNetProtocol({
-    host: "192.168.2.123", 
-    port: 6454,
-})
-
-log(artnetProtocol)
+let artnetProtocol = justArtnet.createArtNetProtocol({socket})
+// let artnetProtocol = justArtnet.createArtNetProtocol({
+//     host: "127.0.0.1", 
+//     port: 8000,
+// })
 
 artnetProtocol.on('listening', ()=>{
-    log('Now Bound and listening ...')
+    log('artnetProtocol Bound and listening ...')
+    log("artnetProtocol Listening", artnetProtocol)
+    artnetProtocol.close();
+    socket.close()
 })
-
+artnetProtocol.on('error', (err) => {   
+    log(`Error: ${err}`); 
+    artnetProtocol.close();
+});
 
 artnetProtocol.on('close', ()=>{
     log('... now Closed')
+    log("artnetProtocol close", artnetProtocol)
 })
+
+socket.on('listening', ()=>{
+    artnetProtocol.bind();
+});
+
+// artnetProtocol.send('artDmx', {})
+// artnetProtocol.close()
+
+/* 
 
 artnetProtocol.on('artPollReply', (artPollReplyPacket) => { 
     log('artPollReply received')
     log(artPollReplyPacket)
 });
 artnetProtocol.on('artPoll', (artPollPacket) => { 
-	log('artPoll received ' + artPollPacket)
-});
-
-artnetProtocol.on('error', err => { 
-    log(err); 
+    log('artPoll received ' + artPollPacket)
 });
 
 artnetProtocol.on('send', (artpollPacket) => { 
     log('Have Sent a packet')
 });
-
-artnetProtocol.bind();
-
-// artnetProtocol.send('artDmx', {})
-// artnetProtocol.close()
+ */

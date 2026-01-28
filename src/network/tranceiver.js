@@ -7,7 +7,7 @@ const {} =require("../constants/constants")
 const { packetParser } = require("../parser/packetParser");
 
 const util = require('util');
-const log = util.debuglog('rxTx');
+const log = util.debuglog('protocol');
 
 
 // Sends and Receives UPD trafic
@@ -39,67 +39,77 @@ class tranceiver extends EventEmitter{
     }
 
     close(){
-        log("close called")
+        log("Close func called")
         
         if(this.ownsSocket){
-            this.socket.removeAllListeners('message')
-            this.socket.removeAllListeners('error')
-            this.socket.removeAllListeners('close')
             this.socket.close()
-            this.receiving = false
         }else{
-            this.socket.removeListener('message', this._msgHandler())
-            this.socket.removeListener('error', this._errorHandler())
-            this.socket.removeListener('close', this._closeHandler())
+            this.socket.removeListener('message', this._msgEmitHandler)
+            this.socket.removeListener('error', this._errorEmitHandler)
+            this.socket.removeListener('close', this._closeEmitHandler)
             this.receiving = false
+            this.emit('close')
         }
-        this.emit('close')
-        log("closed")
+        log("Close func ended")
     }
     
 
     bind(){ // socket starts receiving packets sent to that local port/address (including any remote sender). 
         // take socket and make connectionand start receivinf messages
-        log('bind called')
+        log('Bind func called')
+        if(this.receiving){
+            // TODO: Emit Error
+            log('Allready Bound / Receiving')
+        } else {
+            if(this.ownsSocket){
+                log('Bind owns Socket')
+                try{
+                    // this.socket.on('message', this._msgHandler()) // TODO: msg Handling
+                    this.socket.on('error', this._errorEmitHandler.bind(this))
+                    this.socket.on('close', this._closeEmitHandler.bind(this))
 
-        if(this.ownsSocket){
-            log('bind owns Socket')
-            // this.socket.on('message', this._msgHandler())
-            this.socket.on('error', this._errorHandler())
-            this.socket.on('close', this._closeHandler())
-            this.socket.bind({
-                address: this.host,
-                port: this.port,
-            }, ()=>{
+                    this.socket.bind({
+                        address: this.host,
+                        port: this.port,
+                    }, ()=>{ // TODO: Error Handling?
+                        this.receiving = true
+                        this.emit('listening')
+                    })
+                }catch(e){
+                    this.emit('error', e)
+                }
+
+            }else{
+                log('Bind doesn`t owns Socket')
+                try{
+                    let sockInfo = this.socket.address()
+
+                    this.host = sockInfo.address
+                    this.port = sockInfo.port
+
+                    this.socket.on('message', this._msgEmitHandler.bind(this))
+                    this.socket.on('error', this._errorEmitHandler.bind(this))
+                    this.socket.on('close', this._closeEmitHandler.bind(this))
+                    this.receiving = true
+                }catch(e){
+                    this.emit('error', e)
+                    return
+                }
                 this.emit('listening')
-                this.receiving = true
-            })
-        }else{
-            log('bind doesn`t owns Socket')
-            try{
-                let sockInfo = this.socket.address()
-
-                this.host = sockInfo.address
-                this.port = sockInfo.port
-
-                this.socket.on('message', this._msgHandler())
-                this.socket.on('error', this._errorHandler())
-                this.socket.on('close', this._closeHandler())
-                this.receiving = true
-            }catch(e){
-                this.emit('error', e)
             }
         }
+
         log('Bind func ended')
     }   
 
     send(type, obj){
-        log("send called")
+        log("Send func called")
 
         if(this.receiving){
             //this.socket.send(msg)
+            log(`Receiving, can send`)
         }else{
-            log(`not Receiving`)
+            log(`not Receiving, cant send`)
             this.emit('error')
         }
 
@@ -109,14 +119,21 @@ class tranceiver extends EventEmitter{
         // this.emit('error', {test: "a test Obj"})
     }
 
-    _msgHandler(msg, rinfo){
-        log(`Message received: ${msg} \n From: ${rinfo}`)
+    _msgEmitHandler(msg, rinfo){
+        log(`Message emit received: ${msg} \n From: ${rinfo}`)
+        this.emit('message', msg, rinfo)
     }
-    _errorHandler(err){
-        log(`Error emitted: ${err}`)
+    _errorEmitHandler(err){
+        log(`Error emited: ${err}`)
+        this.emit('error', err)
     }
-    _closeHandler(){
-        log(`Closed emitted`)
+    _closeEmitHandler(){
+        this.receiving = false
+        this.emit('close')
+        this.socket.removeAllListeners('message')
+        this.socket.removeAllListeners('error')
+        this.socket.removeAllListeners('close')
+        log(`Close emited`)
     }
 }
 

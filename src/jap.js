@@ -51,8 +51,8 @@ class jap {
 
 
         if(options.socket){
-            let transreiver = new tranceiver(options)
             options.ownsSocket = false
+            let transreiver = new tranceiver(options)
             return transreiver
         }else{
             let socket = dgram.createSocket('udp4')

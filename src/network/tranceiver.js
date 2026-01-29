@@ -36,6 +36,10 @@ class tranceiver extends EventEmitter{
         this.ownsSocket = options.ownsSocket
 
         this.receiving = false 
+
+        this._boundMsgEmitHandler = this._msgEmitHandler.bind(this)
+        this._boundErrorEmitHandler = this._errorEmitHandler.bind(this)
+        this._boundCloseEmitHandler = this._closeEmitHandler.bind(this)
     }
 
     close(){
@@ -44,9 +48,9 @@ class tranceiver extends EventEmitter{
         if(this.ownsSocket){
             this.socket.close()
         }else{
-            this.socket.removeListener('message', this._msgEmitHandler)
-            this.socket.removeListener('error', this._errorEmitHandler)
-            this.socket.removeListener('close', this._closeEmitHandler.bind(this))
+            this.socket.off('message', this._boundMsgEmitHandler)
+            this.socket.off('error', this._boundErrorEmitHandler)
+            this.socket.off('close', this._boundCloseEmitHandler)
             this.receiving = false
             this.emit('close')
         }
@@ -64,9 +68,9 @@ class tranceiver extends EventEmitter{
             if(this.ownsSocket){
                 log('Bind owns Socket')
                 try{
-                    // this.socket.on('message', this._msgHandler()) // TODO: msg Handling
-                    this.socket.on('error', this._errorEmitHandler.bind(this))
-                    this.socket.on('close', this._closeEmitHandler.bind(this))
+                    this.socket.on('message', this._boundMsgEmitHandler) // TODO: msg Handling
+                    this.socket.on('error', this._boundErrorEmitHandler)
+                    this.socket.on('close', this._boundCloseEmitHandler)
 
                     this.socket.bind({
                         address: this.host,
@@ -87,9 +91,9 @@ class tranceiver extends EventEmitter{
                     this.host = sockInfo.address
                     this.port = sockInfo.port
 
-                    this.socket.on('message', this._msgEmitHandler.bind(this))
-                    this.socket.on('error', this._errorEmitHandler.bind(this))
-                    this.socket.on('close', this._closeEmitHandler.bind(this))
+                    this.socket.on('message', this._boundMsgEmitHandler)
+                    this.socket.on('error', this._boundErrorEmitHandler)
+                    this.socket.on('close', this._boundCloseEmitHandler)
                     this.receiving = true
                 }catch(e){
                     this.emit('error', e)

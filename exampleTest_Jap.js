@@ -49,6 +49,13 @@ let artnetProtocol = justArtnet.createArtNetProtocol({socket})
 
 artnetProtocol.on('listening', ()=>{
     log('artnetProtocol listening ...')
+    log('socket Listeners close: ', util.inspect(socket.listeners('close')))
+    log('socket Listeners message: ', util.inspect(socket.listeners('message')))
+    log('socket Listeners error: ', util.inspect(socket.listeners('error')))
+    
+    log('artnetProtocol: ', artnetProtocol)
+
+
     artnetProtocol.close();
 })
 artnetProtocol.on('error', (err) => {   
@@ -58,12 +65,17 @@ artnetProtocol.on('error', (err) => {
 
 artnetProtocol.on('close', ()=>{
     log('artnetProtocol now Closed')
+    log('socket Listeners close: ', util.inspect(socket.listeners('close')))
+    log('socket Listeners message: ', util.inspect(socket.listeners('message')))
+    log('socket Listeners error: ', util.inspect(socket.listeners('error')))
     socket.close()
 })
 
 socket.on('listening', ()=>{
+    log('artnetProtocol: ', artnetProtocol)    
     artnetProtocol.bind();
 });
+
 
 // artnetProtocol.send('artDmx', {})
 // artnetProtocol.close()

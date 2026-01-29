@@ -18,16 +18,16 @@ const log = util.debuglog('sandbox');
 
 const socket = dgram.createSocket('udp4')
 socket.on('listening', ()=>{
-    log('Socket Now Bound and listening ...')
+    log('Socket now listening ...')
 });
 socket.on('message', (msg)=>{
-    log(msg)
+    log('Socket msg: ', msg)
 });
 socket.on('close', ()=>{
-    log('... Socket closed')
+    log('Socket now closed')
 });
 socket.on('error', err => { 
-    log(err); 
+    log('Socket Err: ',err); 
 });
 socket.bind({
     address: 'localhost',
@@ -39,6 +39,8 @@ socket.bind({
 
 let justArtnet = new jap
 
+log(justArtnet)
+
 let artnetProtocol = justArtnet.createArtNetProtocol({socket})
 // let artnetProtocol = justArtnet.createArtNetProtocol({
 //     host: "127.0.0.1", 
@@ -46,19 +48,17 @@ let artnetProtocol = justArtnet.createArtNetProtocol({socket})
 // })
 
 artnetProtocol.on('listening', ()=>{
-    log('artnetProtocol Bound and listening ...')
-    log("artnetProtocol Listening", artnetProtocol)
+    log('artnetProtocol listening ...')
     artnetProtocol.close();
-    socket.close()
 })
 artnetProtocol.on('error', (err) => {   
-    log(`Error: ${err}`); 
+    log(`artnetProtocol Error: ${err}`); 
     artnetProtocol.close();
 });
 
 artnetProtocol.on('close', ()=>{
-    log('... now Closed')
-    log("artnetProtocol close", artnetProtocol)
+    log('artnetProtocol now Closed')
+    socket.close()
 })
 
 socket.on('listening', ()=>{

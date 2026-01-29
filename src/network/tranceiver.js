@@ -46,7 +46,7 @@ class tranceiver extends EventEmitter{
         }else{
             this.socket.removeListener('message', this._msgEmitHandler)
             this.socket.removeListener('error', this._errorEmitHandler)
-            this.socket.removeListener('close', this._closeEmitHandler)
+            this.socket.removeListener('close', this._closeEmitHandler.bind(this))
             this.receiving = false
             this.emit('close')
         }
@@ -130,9 +130,6 @@ class tranceiver extends EventEmitter{
     _closeEmitHandler(){
         this.receiving = false
         this.emit('close')
-        this.socket.removeAllListeners('message')
-        this.socket.removeAllListeners('error')
-        this.socket.removeAllListeners('close')
         log(`Close emited`)
     }
 }

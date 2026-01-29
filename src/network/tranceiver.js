@@ -64,6 +64,7 @@ class tranceiver extends EventEmitter{
         if(this.receiving){
             // TODO: Emit Error
             log('Allready Bound / Receiving')
+            return true
         } else {
             if(this.ownsSocket){
                 log('Bind owns Socket')
@@ -78,9 +79,11 @@ class tranceiver extends EventEmitter{
                     }, ()=>{ // TODO: Error Handling?
                         this.receiving = true
                         this.emit('listening')
+                        return true
                     })
                 }catch(e){
                     this.emit('error', e)
+                    return e
                 }
 
             }else{
@@ -97,9 +100,10 @@ class tranceiver extends EventEmitter{
                     this.receiving = true
                 }catch(e){
                     this.emit('error', e)
-                    return
+                    return e
                 }
                 this.emit('listening')
+                return true
             }
         }
 

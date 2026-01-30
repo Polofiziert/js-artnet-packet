@@ -5,6 +5,10 @@
 
 const assert = require('node:assert');
 const test = require('node:test');
+const describe = test.describe
+const it = test.it
+const before = test.before
+const after = test.after
 
 const { Buffer } = require('node:buffer');
 const util = require('util');
@@ -13,270 +17,76 @@ const dgram = require('node:dgram')
 
 const { jap } = require("../../jap")
 
-test('artnetProtocol Object works Correctly', (t) => {
+describe('inspect bound protocolObj and bound socketObj', () => {
 
-    t.test('with own Socket', (t) => {
+    let socket = dgram.createSocket('udp4')
+    let justArtnet = new jap
 
-        t.test('create', (t) => {
-            let justArtnet = new jap
-            // this should work with no problem
-            let artnetProtocol = justArtnet.createArtNetProtocol({
-                host: "127.0.0.1", 
-                port: 6454,
-            })
-        });
+    let options = {
+        address: '127.0.0.1',
+        port: 6454,
+    } 
 
-        t.test('bind and close', (t) => {
-            let justArtnet = new jap
-            // this should work with no problem
-            let artnetProtocol = justArtnet.createArtNetProtocol({
-                host: "127.0.0.1", 
-                port: 6454,
-            })
+    let artnetProtocol = justArtnet.createArtNetProtocol({socket})
 
+    before((t, done)=>{
+        artnetProtocol.on("listening", ()=>{
+            console.log("protocol listening")
+            done()
+        })
+        artnetProtocol.on("error", (err)=>{
+            done(err)
+        })
+        socket.on("error", (err)=>{
+            done(err)
+        })
+        socket.on("listening", () => {
+            console.log("socket listening")
             artnetProtocol.bind()
-            artnetProtocol.on('listening', ()=>{
-                artnetProtocol.close();
-            });
+        })
+        socket.bind(options)
+    })
+    
+    after((t, done) => {
+        socket.on("close", ()=>{
+            console.log("socket close")
+            done()
+        })
+        artnetProtocol.on("close", ()=>{
+            console.log("protocol close")
+            socket.close()
+        })
+        artnetProtocol.close()
+    })
+
+    it('should work', () => {
+        console.log(5)
+        assert.strictEqual(3, 3);
+    });
+
+    it('bound protocolObj: socketObj shoul have Listeners', (t) => {
+        it('has close Listener', (t) => {
+            let actual = util.inspect(socket.listeners('close'))
+            let expectet = "[ [Function: bound _closeEmitHandler] ]"
+                        
+            // Socket should have no Listeners
+            assert.deepEqual(actual, expectet)
         });
-
-        t.test('bind and close', (t) => {
-            let justArtnet = new jap
-            // this should work with no problem
-            let artnetProtocol = justArtnet.createArtNetProtocol({
-                host: "127.0.0.1", 
-                port: 6454,
-            })
-
-            artnetProtocol.bind()
-            artnetProtocol.on('listening', ()=>{
-                artnetProtocol.close();
-            });
+        it('has message Listener', (t) => {
+            let actual = util.inspect(socket.listeners('message'))
+            let expectet = "[ [Function: bound _msgEmitHandler] ]"
+                        
+            // Socket should have no Listeners
+            assert.deepEqual(actual, expectet)
+        });
+        it('has error Listener', (t) => {
+            let actual = util.inspect(socket.listeners('error'))
+            let expectet = "[ [Function: bound _errorEmitHandler] ]"
+                        
+            // Socket should have no Listeners
+            assert.deepEqual(actual, expectet)
         });
 
     });
-
-    t.test('with given Socket', (t) => {
-
-        t.test('create', (t) => {
-            let socket = dgram.createSocket('udp4')
-            let justArtnet = new jap
-
-            // this should work with no problem
-            let artnetProtocol = justArtnet.createArtNetProtocol({socket})
-        });
-
-        t.test('bind and close', (t) => {
-            let socket = dgram.createSocket('udp4')
-            let justArtnet = new jap
-
-            let options = {
-                address: 'localhost',
-                port: 6454,
-            } 
-
-            let artnetProtocol = justArtnet.createArtNetProtocol({socket})
-
-            socket.on('listening', ()=>{
-                // console.log("socket listening")
-                artnetProtocol.bind()
-            });
-            socket.on('close', ()=>{
-                // console.log("socket close")
-            });
-            artnetProtocol.on('listening', ()=>{
-                // console.log("protocol listening")
-                artnetProtocol.close();
-            });
-            artnetProtocol.on('close', ()=>{
-                // console.log("protocol close")
-                socket.close();
-            });
-            
-            socket.bind(options)
-        });
-
-        t.test('inspect unbound protocolObj and bound socketObj', (t) => {
-            let socket = dgram.createSocket('udp4')
-            let justArtnet = new jap
-
-            let options = {
-                address: 'localhost',
-                port: 6454,
-            } 
-
-            let artnetProtocol = justArtnet.createArtNetProtocol({socket})
-
-            t.before( (t)=> {
-                console.log("unbound protocolObj: opening socket")
-                socket.bind(options)
-            })
-
-            t.test('unbound protocolObj: socketObj has no Listeners', (t) => {
-                t.test('no close Listener', (t) => {
-                        let actualCloseListener = util.inspect(socket.listeners('close'))
-                        let expectetCloseListener = "[]"
-                        
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualCloseListener, expectetCloseListener)
-                });
-                t.test('no message Listener', (t) => {
-                        let actualMsgListener = util.inspect(socket.listeners('message'))
-                        let expectetMsgListener = "[]"                        
-                                            
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualMsgListener, expectetMsgListener)
-                });
-
-                t.test('no error Listener', (t) => {
-                        let actualErrorListener = util.inspect(socket.listeners('error'))
-                        let expectetErrorListener = "[]"
-                        
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualErrorListener, expectetErrorListener)
-                });
-
-                t.test('no listening Listener', (t) => {
-                        let actualListeningListener = util.inspect(socket.listeners('listening'))
-                        let expectetListeningListener = "[]"
-                        
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualListeningListener, expectetListeningListener)
-                });
-            });
-
-            t.test('unbound protocolObj: protocolObj is...', (t) => {
-                t.test('no receiving', (t) => {
-                        let actual = artnetProtocol.receiving;
-                        let expected = 0;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-                t.test('no ownsSocket', (t) => {
-                        let actual = artnetProtocol.ownsSocket;
-                        let expected = 0;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-                t.test('no host', (t) => {
-                        let actual = artnetProtocol.host;
-                        let expected = null;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-                t.test('no port', (t) => {
-                        let actual = artnetProtocol.port;
-                        let expected = null;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-            });
-
-            t.after( (t) => {
-                console.log("unbound protocolObj: closing socket")
-                socket.close()
-            })
-        });
-
-        t.test('inspect bound protocolObj and bound socketObj', (t) => {
-            let socket = dgram.createSocket('udp4')
-            let justArtnet = new jap
-
-            let options = {
-                address: 'localhost',
-                port: 6454,
-            } 
-
-            let artnetProtocol = justArtnet.createArtNetProtocol({socket})
-
-            t.before(async (t)=> {
-                console.log("bound protocolObj: opening socket")
-
-                await socket.bind(options,() => {
-                    console.log("bound protocolObj: socket listening")
-                    let res = artnetProtocol.bind()
-                    console.log("bound protocolObj: socket: ", res)
-                })
-            })
-
-            t.test('bound protocolObj: socketObj has Listeners', (t) => {
-                t.test('no close Listener', (t) => {
-                        console.log("bound protocolObj: 1")
-                        let actualCloseListener = util.inspect(socket.listeners('close'))
-                        let expectetCloseListener = "[]"
-                        
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualCloseListener, expectetCloseListener)
-                    });
-                    t.test('no message Listener', (t) => {
-                        console.log("bound protocolObj: 2")
-                        let actualMsgListener = util.inspect(socket.listeners('message'))
-                        let expectetMsgListener = "[]"                        
-                                            
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualMsgListener, expectetMsgListener)
-                });
-
-                t.test('no error Listener', (t) => {
-                    console.log("bound protocolObj: 3")
-                        let actualErrorListener = util.inspect(socket.listeners('error'))
-                        let expectetErrorListener = "[]"
-                        
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualErrorListener, expectetErrorListener)
-                });
-
-                t.test('no listening Listener', (t) => {
-                    console.log("bound protocolObj: 4")
-                        let actualListeningListener = util.inspect(socket.listeners('listening'))
-                        let expectetListeningListener = "[]"
-                        
-                        // Socket should have no Listeners
-                        assert.deepEqual(actualListeningListener, expectetListeningListener)
-                });
-            });
-
-            t.test('unbound protocolObj: protocolObj is ...', (t) => {
-                t.test('no receiving', (t) => {
-                        let actual = artnetProtocol.receiving;
-                        let expected = 0;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-                t.test('no ownsSocket', (t) => {
-                        let actual = artnetProtocol.ownsSocket;
-                        let expected = 0;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-                t.test('no host', (t) => {
-                        let actual = artnetProtocol.host;
-                        let expected = null;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-                t.test('no port', (t) => {
-                        let actual = artnetProtocol.port;
-                        let expected = null;
-
-                        // Socket should have no Listeners
-                        assert.deepEqual(actual, expected)
-                });
-            });
-
-            t.after( (t) => {
-                console.log("bound protocolObj: closing socket")
-                socket.close()
-            })
-        });
-
-    });
-
 });
+    

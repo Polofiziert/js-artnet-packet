@@ -1,12 +1,12 @@
 //const r = require('restructure');
-const {toBinString, toBinStringPretty, toHexStringPretty} = require('./helper');
+const {toBinString, toBinStringPretty, toHexStringPretty} = require('../helper');
 const {Buffer} = require('node:buffer')
-const {MappedBitfield, FixedString, MappedEnum} = require('./src/packets/schemas/fieldTypeExtention')
-const {pollReplySchema} = require('./src/packets/schemas/opPollReply')
+const {MappedBitfield, FixedString, MappedEnum} = require('../src/packets/schemas/fieldTypeExtention')
+const {pollReplySchema} = require('../src/packets/schemas/opPollReply')
 const dgram = require('node:dgram')
-const {ArtNetCodes} = require("./src/codes")
-const { PollReplyPacket } = require("./src/packets/pollReplyPacket")
-const { PollPacket } = require("./src/packets/pollPacket")
+const {ArtNetCodes} = require("../src/codes")
+const { PollReplyPacket } = require("../src/packets/pollReplyPacket")
+const { PollPacket } = require("../src/packets/pollPacket")
 
 
 // -----------------------------------

@@ -4,14 +4,14 @@ const client = dgram.createSocket('udp4');
 const os = require('node:os')
 
 //const r = require('restructure');
-const {toBinString, toBinStringPretty, toHexStringPretty} = require('./helper');
-const {MappedBitfield, FixedString, MappedEnum} = require('./src/packets/schemas/fieldTypeExtention')
-const {pollReplySchema} = require('./src/packets/schemas/opPollReply')
-const {ArtNetCodes} = require("./src/codes")
-const { PollReplyPacket } = require("./src/packets/pollReplyPacket")
-const { PollPacket } = require("./src/packets/pollPacket")
+const {toBinString, toBinStringPretty, toHexStringPretty} = require('../helper');
+const {MappedBitfield, FixedString, MappedEnum} = require('../src/packets/schemas/fieldTypeExtention')
+const {pollReplySchema} = require('../src/packets/schemas/opPollReply')
+const {ArtNetCodes} = require("../src/codes")
+const { PollReplyPacket } = require("../src/packets/pollReplyPacket")
+const { PollPacket } = require("../src/packets/pollPacket")
 
-const { jap } = require("./src/jap")
+const { jap } = require("../src/jap")
 
 const util = require('util');
 const log = util.debuglog('sandbox');
@@ -35,6 +35,7 @@ socket.bind({
 }); 
 
 
+
 // -----------------------------------
 
 let justArtnet = new jap
@@ -54,8 +55,6 @@ artnetProtocol.on('listening', ()=>{
     log('socket Listeners error: ', util.inspect(socket.listeners('error')))
     
     log('artnetProtocol: ', artnetProtocol)
-
-
     artnetProtocol.close();
 })
 artnetProtocol.on('error', (err) => {   

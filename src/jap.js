@@ -4,7 +4,7 @@ const dgram = require('node:dgram')
 const {toBinString, toBinStringPretty, toHexStringPretty, toHexString, toHexStringArray, checkIp} = require('../helper');
 const {MappedBitfield, FixedString, MappedEnum} = require('./packets/schemas/fieldTypeExtention')
 const {ArtNetCodes} = require("./codes")
-const {tranceiver} = require("./network/tranceiver")
+const {protocol} = require("./network/tranceiver")
 const { ArtNetConfigurationError } = require('./errors/config.error')
 
 const util = require('util');
@@ -52,13 +52,13 @@ class jap {
 
         if(options.socket){
             options.ownsSocket = false
-            let transreiver = new tranceiver(options)
+            let transreiver = new protocol(options)
             return transreiver
         }else{
             let socket = dgram.createSocket('udp4')
             options.socket = socket
             options.ownsSocket = true
-            let transreiver = new tranceiver(options)
+            let transreiver = new protocol(options)
             return transreiver
         }
     }

@@ -4,7 +4,12 @@ const socket = dgram.createSocket('udp4');
 const EventEmitter = require('node:events');
 const os = require('node:os')
 const {} =require("../constants/constants")
-const { packetParser } = require("../parser/packetParser");
+const { PacketParser } = require("../parser/packetParser");
+const { DmxPacket } = require("../packets/dmxPacket")
+const { ArtNetTransportError } = require('../errors/transport.error')
+const {toBinString, toBinStringPretty, toHexStringPretty} = require('../../helper');
+
+
 
 const util = require('util');
 const log = util.debuglog('protocol');
@@ -27,7 +32,7 @@ Events:
 - error
 */
 
-class tranceiver extends EventEmitter{
+class protocol extends EventEmitter{
     constructor(options){
         super()
         options.socket ? this.socket = options.socket : null
@@ -58,15 +63,19 @@ class tranceiver extends EventEmitter{
     }
     
 
-    bind(){ // socket starts receiving packets sent to that local port/address (including any remote sender). 
-        // take socket and make connectionand start receivinf messages
+    bind(){
+        // take socket and make connection and start receiving messages
         log('Bind func called')
         if(this.receiving){
-            // TODO: Emit Error
+            // Emits Error when allready bound. 
+            // TODO: Maybe add a "this.binding" variable so only one function call runns at a time?
+            // TODO: this.binding would be only used when grossly negligent use from the User....
             log('Allready Bound / Receiving')
-            return true
+            throw new ArtNetTransportError(2001, "artnetProtocol.bind", "Protocol is already bound");
         } else {
+            // Looks if socket is given or self created
             if(this.ownsSocket){
+                // when socket selfcreated registers listeners and binds the port to given address and port
                 log('Bind owns Socket')
                 try{
                     this.socket.on('message', this._boundMsgEmitHandler) // TODO: msg Handling
@@ -87,6 +96,7 @@ class tranceiver extends EventEmitter{
                 }
 
             }else{
+                // when socket is given, just registers listeners to socket
                 log('Bind doesn`t owns Socket')
                 try{
                     let sockInfo = this.socket.address()
@@ -110,15 +120,38 @@ class tranceiver extends EventEmitter{
         log('Bind func ended')
     }   
 
-    send(type, obj){
+    send(type, ipAddress, options){
         log("Send func called")
 
         if(this.receiving){
-            //this.socket.send(msg)
-            log(`Receiving, can send`)
+            log(`Receiving, can send: ${this.port} to ${options.ipAddress}`)
+            
+            switch (type) {
+                case "artDmx":
+                    // client.send(message, port, 'localhost', (err) => {
+                    // artnetProtocol.send('artDmx', "192.168.2.114", { portAddress: {net: 0, subNet: 0, universe: 0}, data: buf } )
+                    
+                    let packet = new DmxPacket()
+
+                    packet.data.net = options.portAddress.net
+                    packet.data.subUni = options.portAddress.subNet
+                    log("packet filled: ", packet)
+                    
+                    let data = packet.encode()
+                    
+                    log("packet encode: ", toHexStringPretty(data))
+
+                    this.socket.send(data, this.port, ipAddress)
+                    return 1
+                default:
+                    log("Send func unkown type")
+                    let wrongTypeError = new ArtNetTransportError(2003, "artnetProtocol.send", "unkown artnet packet type")
+                    this.emit("error", wrongTypeError)
+            }            
         }else{
             log(`not Receiving, cant send`)
-            this.emit('error')
+            let error = new ArtNetTransportError(2002, "artnetProtocol.send", "Protocol is not bound!");
+            this.emit('error', error)
         }
 
         // this.emit('send')
@@ -143,5 +176,5 @@ class tranceiver extends EventEmitter{
 }
 
 module.exports = {
-    tranceiver
+    protocol
 }

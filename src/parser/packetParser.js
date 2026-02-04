@@ -10,7 +10,7 @@ const { ArtNetCodes } = require("../codes/")
 const { PollPacket } = require("../packets/pollPacket")
 const { PollReplyPacket } = require("../packets/pollReplyPacket")
 
-class packetParser {
+class PacketParser {
     constructor(){
 
     }
@@ -50,5 +50,5 @@ class packetParser {
 
 
 module.exports = {
-    packetParser
+    PacketParser
 }

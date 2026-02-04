@@ -1,11 +1,10 @@
 const ArtNetError = require('./base.error')
 
 class ArtNetTransportError extends ArtNetError {
-  constructor(errorCode, message, err) {
-    super(message);
-    this.errorCode = errorCode
-    this.code = err?.code
+  constructor(errorCode, call, description) {
+    super(errorCode, description);
     this.name = 'ArtNetTransportError'
+    this.call = call
   }
 }
 

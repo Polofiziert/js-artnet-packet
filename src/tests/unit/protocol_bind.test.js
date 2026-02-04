@@ -208,6 +208,25 @@ describe('artnetProtocol Object binds Correctly', (t) => {
                 });
                 
             });
+
+            it('bound protocolObj: obj should Throw Errors', (t) => {
+
+                it('Socket is already bound', (t) => {
+                                
+                    // should throw an error
+                    assert.throws(
+                    () => {
+                        artnetProtocol.bind()
+                    },
+                    {
+                        name: "ArtNetTransportError",
+                        message: "Protocol is already bound",
+                        call: "artnetProtocol.bind"
+                    }
+                    )
+                });
+
+            });
         });
 
     });

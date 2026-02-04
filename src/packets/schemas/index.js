@@ -1,5 +1,6 @@
 const opPollSchema = require('./opPoll');
 const pollReplySchema = require('./opPollReply');
+const dmxSchema = require('./opDmx')
 
 
 
@@ -7,4 +8,5 @@ const pollReplySchema = require('./opPollReply');
 module.exports = {
     opPollSchema,
     pollReplySchema,
+    dmxSchema,
 }

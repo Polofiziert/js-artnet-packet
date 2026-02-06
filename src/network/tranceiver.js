@@ -6,6 +6,8 @@ const os = require('node:os')
 const {} =require("../constants/constants")
 const { PacketParser } = require("../parser/packetParser");
 const { DmxPacket } = require("../packets/dmxPacket")
+const { PollPacket } = require("../packets/pollPacket")
+const { ArtNetPackets } = require("../packets/packets")
 const { ArtNetTransportError } = require('../errors/transport.error')
 const {toBinString, toBinStringPretty, toHexStringPretty} = require('../../helper');
 
@@ -76,7 +78,7 @@ class protocol extends EventEmitter{
             // Looks if socket is given or self created
             if(this.ownsSocket){
                 // when socket selfcreated registers listeners and binds the port to given address and port
-                log('Bind owns Socket')
+                log(`Bind owns Socket| Host: ${this.host}; Port: ${this.port}`)
                 try{
                     this.socket.on('message', this._boundMsgEmitHandler) // TODO: msg Handling
                     this.socket.on('error', this._boundErrorEmitHandler)
@@ -124,32 +126,52 @@ class protocol extends EventEmitter{
         log("Send func called")
 
         if(this.receiving){
-            log(`Receiving, can send: ${this.port} to ${options.ipAddress}`)
+            log(`SendFunc: Receiving, can send: ${this.port} to ${ipAddress} from ${this.host}`)
+            let data;
             
-            switch (type) {
+            switch (type) { // TODO: Change for an for loop with an array of every type
                 case "artDmx":
                     // client.send(message, port, 'localhost', (err) => {
                     // artnetProtocol.send('artDmx', "192.168.2.114", { portAddress: {net: 0, subNet: 0, universe: 0}, data: buf } )
                     
-                    let packet = new DmxPacket()
+                    if(options instanceof ArtNetPackets){
+                        log("SendFunc: Got DMX packet")
+                        data = options.encode()
+                    }else{
+                        log("SendFunc: Got DMX options")
+                        let packet = new DmxPacket()
 
-                    packet.data.net = options.portAddress.net
-                    packet.data.subUni = options.portAddress.subNet
-                    log("packet filled: ", packet)
+                        packet.data.net = options.portAddress.net
+                        packet.data.subUni = options.portAddress.subNet
+                        packet.data.data = options.data
+                        data = packet.encode()
+                    }
                     
-                    let data = packet.encode()
-                    
-                    log("packet encode: ", toHexStringPretty(data))
+                    log("SendFunc: packet encode: ", "\n" + toHexStringPretty(data))
 
                     this.socket.send(data, this.port, ipAddress)
                     return 1
+                case "artPoll":
+                    if(options instanceof ArtNetPackets){
+                        log("SendFunc: Got POLL packet")
+                        data = options.encode()
+                    }else{
+                        log("SendFunc: Got POLL options")
+                        let packet = new PollPacket()
+
+                        packet.data = Object.assign(packet.data, options) // merges the options into the data
+                        data = packet.encode()
+                    }
+                    log("SendFunc: pollPacket encode: ", "\n" + toHexStringPretty(data))
+                    this.socket.send(data, this.port, ipAddress)
+                    return 1
                 default:
-                    log("Send func unkown type")
+                    log("SendFunc: unkown type")
                     let wrongTypeError = new ArtNetTransportError(2003, "artnetProtocol.send", "unkown artnet packet type")
                     this.emit("error", wrongTypeError)
             }            
         }else{
-            log(`not Receiving, cant send`)
+            log(`SendFunc: not Receiving, cant send`)
             let error = new ArtNetTransportError(2002, "artnetProtocol.send", "Protocol is not bound!");
             this.emit('error', error)
         }

@@ -32,6 +32,7 @@ class DmxPacket extends ArtNetPackets{
         //console.log("encoding")
         this._increntCounters()
         this._updateSequenceNumber()
+        this.data.length = this.data.data.length
         return this.schema.toBuffer(this.data)
     }
 

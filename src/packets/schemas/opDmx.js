@@ -12,7 +12,7 @@ const dmxSchema = new r.Struct({
     physical: r.uint8,
     subUni: r.uint8,
     net: r.uint8,
-    length: r.uint8,
+    length: r.uint16be,
     data: new r.Array(r.uint8, 512),
 })
 

@@ -58,7 +58,7 @@ function toHexStringPretty(arr, line) {
 
 function checkIp(ip) {
     let ipv4 = 
-        /^(\d{1,3}\.){3}\d{1,3}$/;
+        /^(\d{1,3}\.){3}\d{1,3}|localhost$/;
     let ipv6 = 
         /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
     return ipv4.test(ip) || ipv6.test(ip);

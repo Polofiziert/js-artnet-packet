@@ -64,6 +64,10 @@ function checkIp(ip) {
     return ipv4.test(ip) || ipv6.test(ip);
 }
 
+function uniSubnetToLowByte(uni, subNet) {
+    let lowByte = uni << 4 | subNet; // shift uni 4bits to left and atach subNet behind it with bitwiseOr
+    return lowByte
+}
 
 module.exports = {
     toBinString,

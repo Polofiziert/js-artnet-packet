@@ -25,7 +25,8 @@
   "homepage": "https://github.com/Polofiziert/js-artnet-packet#readme",
   "devDependencies": {
     "@types/node": "^25.0.2",
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "prettier": "3.8.1"
   },
   "dependencies": {
     "restructure": "^3.0.2"

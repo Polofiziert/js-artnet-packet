@@ -1,6 +1,5 @@
 /**
- * @fileoverview Base class for ArtNet Paket Objekte.
- * @module
+ * @fileoverview Base class for ArtNet Paket Objects.
  * @author polofiziert
  * @version 0.0.1
  */

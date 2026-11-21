@@ -1,34 +1,49 @@
 {
-  "name": "js-artnet-packet",
-  "version": "0.0.1",
-  "description": "Jet another ArtNet Packet",
-  "main": "index.js",
-  "scripts": {
-    "test": "./lib/tests/test-packets.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Polofiziert/js-artnet-packet.git"
-  },
-  "keywords": [
-    "Artnet",
-    "ArtNet",
-    "DMX",
-    "Light",
-    "Event"
-  ],
-  "author": "polofiziert",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Polofiziert/js-artnet-packet/issues"
-  },
-  "homepage": "https://github.com/Polofiziert/js-artnet-packet#readme",
-  "devDependencies": {
-    "@types/node": "^25.0.2",
-    "concurrently": "^9.2.1",
-    "prettier": "3.8.1"
-  },
-  "dependencies": {
-    "restructure": "^3.0.2"
-  }
+	"name": "js-artnet-packet",
+	"version": "0.0.2",
+	"description": "Jet another ArtNet Packet",
+	"type": "module",
+	"scripts": {
+		"build": "tsup js-artnet-packet/lib/index.ts --format esm --dts --sourcemap --out-dir js-artnet-packet/dist --clean",
+		"dev": "tsup js-artnet-packet/lib/index.ts --watch --format esm --dts --sourcemap --out-dir js-artnet-packet/dist",
+		"test": "node test",
+		"format": "prettier --write ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Polofiziert/js-artnet-packet.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Polofiziert/js-artnet-packet/issues"
+	},
+	"homepage": "https://github.com/Polofiziert/js-artnet-packet#readme",
+	"main": "./js-artnet-packet/dist/index.js",
+	"module": "./js-artnet-packet/dist/index.js",
+	"types": "./js-artnet-packet/dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./js-artnet-packet/dist/index.js",
+			"types": "./js-artnet-packet/dist/index.d.ts"
+		}
+	},
+	"files": [
+		"js-artnet-packet",
+		"README.md",
+		"LICENSE"
+	],
+	"author": "polofiziert",
+	"license": "MIT",
+	"keywords": [
+		"Artnet",
+		"ArtNet",
+		"DMX",
+		"Light",
+		"Event"
+	],
+	"devDependencies": {
+		"@types/node": "^26.6.6",
+		"tsup": "^9.0.0",
+		"typescript": "^7.0.2"
+	},
+	"packageManager": "pnpm@10.30.1"
 }
